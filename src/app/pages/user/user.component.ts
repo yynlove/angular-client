@@ -1,14 +1,28 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { Observable, Observer } from 'rxjs';
 
-interface ItemData {
+interface jichu{
   id: number;
-  name: string;
+}
+
+interface ItemData extends jichu {
+
+  userName: string;
   age: number;
   address: string;
 }
 
-
+interface User extends jichu{
+  address: string;
+  password: string;
+  confrim: string;
+  gender:string;
+  account:string;
+  userName: string;
+  age: number;
+}
 
 @Component({
   selector: 'app-user',
@@ -22,8 +36,102 @@ export class UserComponent implements OnInit {
   listOfCurrentPageData: ItemData[] = [];
   listOfData: ItemData[] = [];
   setOfCheckedId = new Set<number>();
+  visible = false;
+  editCache: { [key: number]: { edit: boolean; data: ItemData } } = {};
 
-  constructor(private nzMessageService:NzMessageService) { }
+  validateForm : FormGroup;
+
+
+
+
+  open(): void {
+    this.visible = true;
+  }
+
+
+
+  close(e:MouseEvent= null): void {
+    if(e!==null){
+      e.preventDefault()
+    };
+    this.validateForm.reset();
+    for (const key in this.validateForm.controls) {
+      this.validateForm.controls[key].markAsPristine();
+      this.validateForm.controls[key].updateValueAndValidity();
+    }
+    this.visible = false;
+
+  }
+
+  /**
+   *
+   * 新增提交表单
+   */
+   submitForm(value: User): void {
+
+    this.listOfData=[ {id:new Date().getTime(),
+      userName:this.validateForm.controls.userName.value,
+      age:this.validateForm.controls.age.value,
+      address:this.validateForm.controls.address.value
+    },
+      ...this.listOfData
+     ];
+    this.updateEditCache();
+    this.validateForm.reset();
+    //这里不会又一次触发formControl的异步校验事件
+    //手动更改表单状态时，例如 markAsDirty 后，需要执行 updateValueAndValidity 通知 nz-form-control 进行状态变更。
+    for (const key in this.validateForm.controls) {
+      this.validateForm.controls[key].markAsDirty();
+      this.validateForm.controls[key].updateValueAndValidity();
+    }
+    this.visible = false;
+
+  }
+
+
+  userNameAsyncValidator = (control:FormControl) =>
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      setTimeout(() => {
+        if (control.value === 'yuanyenan') {
+          // you have to return `{error: true}` to mark it as an error event
+          observer.next({ error: true, duplicated: true });
+        } else {
+          observer.next(null);
+        }
+        observer.complete();
+        console.log("校验名字")
+      }, 1000);
+  });
+
+
+  confirmValidator = (control :FormControl): {[s:string]:boolean} =>{
+    if (!control.value) {
+      return { error: true, required: true };
+    } else if (control.value !== this.validateForm.controls.password.value) {
+      return { confirm: true, error: true };
+    }
+    return {};
+
+  }
+
+  validateConfirmPassword(): void {
+    setTimeout(() => this.validateForm.controls.confirm.updateValueAndValidity());
+  }
+
+  constructor(private nzMessageService:NzMessageService,private fb: FormBuilder) {
+      this.validateForm = this.fb.group({
+        userName:['',[Validators.required], [this.userNameAsyncValidator]],
+        age:['',[Validators.required]],
+        password:['',[Validators.required]],
+        confirm:['',[this.confirmValidator]],
+        gender:['',[Validators.required]],
+        account:['',[Validators.required]],
+        address:['',[Validators.required]]
+      });
+
+
+
+   }
 
 
   listOfSelection = [
@@ -34,14 +142,14 @@ export class UserComponent implements OnInit {
       }
     },
     {
-      text: '选择奇数行',
+      text: '选择偶数行',
       onSelect: () => {
         this.listOfCurrentPageData.forEach((data, index) => this.updateCheckedSet(data.id, index % 2 !== 0));
         this.refreshCheckedStatus();
       }
     },
     {
-      text: '选择偶数行',
+      text: '选择奇数行',
       onSelect: () => {
         this.listOfCurrentPageData.forEach((data, index) => this.updateCheckedSet(data.id, index % 2 === 0));
         this.refreshCheckedStatus();
@@ -50,7 +158,8 @@ export class UserComponent implements OnInit {
   ];
 
 
-  editCache: { [key: number]: { edit: boolean; data: ItemData } } = {};
+
+
 
   startEdit(id: number): void {
     this.editCache[id].edit = true;
@@ -83,6 +192,8 @@ export class UserComponent implements OnInit {
     this.nzMessageService.info("删除成功！");
 
   }
+
+
 
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -119,10 +230,10 @@ export class UserComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.listOfData = new Array(200).fill(0).map((_, index) => {
+    this.listOfData = new Array(20).fill(0).map((_, index) => {
       return {
         id: index,
-        name: `Edward King ${index}`,
+        userName: `Edward King ${index}`,
         age: 32,
         address: `London, Park Lane no. ${index}`
       };
