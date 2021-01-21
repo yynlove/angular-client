@@ -2,27 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { Observable, Observer } from 'rxjs';
+import { User } from 'src/app/services/data-typs/data';
+import { UserService } from 'src/app/services/user.service';
 
-interface jichu{
-  id: number;
-}
 
-interface ItemData extends jichu {
-
-  userName: string;
-  age: number;
-  address: string;
-}
-
-interface User extends jichu{
-  address: string;
-  password: string;
-  confrim: string;
-  gender:string;
-  account:string;
-  userName: string;
-  age: number;
-}
 
 @Component({
   selector: 'app-user',
@@ -33,15 +16,15 @@ export class UserComponent implements OnInit {
 
   checked = false;
   indeterminate = false;
-  listOfCurrentPageData: ItemData[] = [];
-  listOfData: ItemData[] = [];
+  listOfCurrentPageData: User[];
+  listOfData: User[];
   setOfCheckedId = new Set<number>();
   visible = false;
-  editCache: { [key: number]: { edit: boolean; data: ItemData } } = {};
+  editCache: { [key: number]: { edit: boolean; data: User } } = {};
   modalFrom : FormGroup;
 
 
-  constructor(private nzMessageService:NzMessageService,private fb: FormBuilder) {
+  constructor(private nzMessageService:NzMessageService,private fb: FormBuilder,private userService:UserService) {
 
     this.modalFrom = this.fb.group({
       userName:['',[Validators.required], [this.userNameAsyncValidator]],
@@ -57,16 +40,13 @@ export class UserComponent implements OnInit {
 
 
  ngOnInit(): void {
-
-  this.listOfData = new Array(20).fill(0).map((_, index) => {
-    return {
-      id: index,
-      userName: `Edward King ${index}`,
-      age: 32,
-      address: `London, Park Lane no. ${index}`
-    };
+  this.userService.getUsersInfo().subscribe(user =>{
+    this.listOfData = user;
+    console.log('this.listOfData',this.listOfData);
+    this.updateEditCache();
   });
-  this.updateEditCache();
+
+
 }
 
 
@@ -81,7 +61,7 @@ export class UserComponent implements OnInit {
 
   /**
    * 关闭新增面板
-   * @param e 
+   * @param e
    */
   close(e:MouseEvent= null): void {
     if(e!==null){
@@ -151,10 +131,10 @@ export class UserComponent implements OnInit {
     setTimeout(() => this.modalFrom.controls.confirm.updateValueAndValidity());
   }
 
-  
+
   /**
    * 编辑
-   * @param id 
+   * @param id
    */
   editClick(id: number): void {
     this.editCache[id].edit = true;
@@ -164,7 +144,7 @@ export class UserComponent implements OnInit {
 
   /**
    * 保存编辑
-   * @param id 
+   * @param id
    */
   saveEdit(id: number): void {
     const index = this.listOfData.findIndex(item => item.id === id);
@@ -176,7 +156,7 @@ export class UserComponent implements OnInit {
 
   /**
    * 取消编辑
-   * @param id 
+   * @param id
    */
   cancelEdit(id: number): void {
     const index = this.listOfData.findIndex(item => item.id === id);
@@ -188,7 +168,7 @@ export class UserComponent implements OnInit {
 
   /**
    * 删除
-   * @param id 
+   * @param id
    */
   delete(id:number):void{
     this.listOfData = this.listOfData.filter(d => d.id !== id);
@@ -201,8 +181,8 @@ export class UserComponent implements OnInit {
 
   /**
    * 修改选择的状态
-   * @param id 
-   * @param checked 
+   * @param id
+   * @param checked
    */
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
@@ -214,8 +194,8 @@ export class UserComponent implements OnInit {
 
   /**
    * 选择一条记录
-   * @param id 
-   * @param checked 
+   * @param id
+   * @param checked
    */
   onItemChecked(id: number, checked: boolean): void {
     this.updateCheckedSet(id, checked);
@@ -224,20 +204,20 @@ export class UserComponent implements OnInit {
 
   /**
    * 选择所有
-   * @param value 
+   * @param value
    */
   onAllChecked(value: boolean): void {
     this.listOfCurrentPageData.forEach(item => this.updateCheckedSet(item.id, value));
     this.refreshCheckedStatus();
-  
+
   }
 
   /**
-   * 
+   *
    * @param $event 当前页面数据改变时 回调
    */
-  onCurrentPageDataChange($event: ItemData[]): void {
-  
+  onCurrentPageDataChange($event: User[]): void {
+
     this.listOfCurrentPageData = $event;
     this.refreshCheckedStatus();
   }
@@ -253,7 +233,7 @@ export class UserComponent implements OnInit {
     this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.id)) && !this.checked;
   }
 
-  
+
 
   /**
    * 更新数组编辑状态
