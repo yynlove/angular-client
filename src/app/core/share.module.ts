@@ -10,15 +10,18 @@ import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+
+
+
 @NgModule({
   declarations: [],
-
-  exports:[
-    NzIconModule ,
-    NzInputModule,
+  imports: [
     FormsModule,
     ReactiveFormsModule,
+    NzInputModule,
     NzPopconfirmModule,
     NzButtonModule,
     NzMessageModule,
@@ -27,7 +30,27 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
     NzRadioModule,
     NzTableModule,
     NzCheckboxModule,
-    NzCardModule
+    NzCardModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzIconModule
+  ],
+  exports:[
+    FormsModule,
+    ReactiveFormsModule,
+    NzInputModule,
+    NzPopconfirmModule,
+    NzButtonModule,
+    NzMessageModule,
+    NzDrawerModule,
+    NzFormModule,
+    NzRadioModule,
+    NzTableModule,
+    NzCheckboxModule,
+    NzCardModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzIconModule
   ]
 })
-export class NgzerroModule { }
+export class ShareModule { }

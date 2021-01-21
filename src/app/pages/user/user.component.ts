@@ -38,26 +38,59 @@ export class UserComponent implements OnInit {
   setOfCheckedId = new Set<number>();
   visible = false;
   editCache: { [key: number]: { edit: boolean; data: ItemData } } = {};
-
-  validateForm : FormGroup;
-
+  modalFrom : FormGroup;
 
 
+  constructor(private nzMessageService:NzMessageService,private fb: FormBuilder) {
 
+    this.modalFrom = this.fb.group({
+      userName:['',[Validators.required], [this.userNameAsyncValidator]],
+      age:['',[Validators.required]],
+      password:['',[Validators.required]],
+      confirm:['',[this.confirmValidator]],
+      gender:['',[Validators.required]],
+      account:['',[Validators.required]],
+      address:['',[Validators.required]]
+    });
+
+ }
+
+
+ ngOnInit(): void {
+
+  this.listOfData = new Array(20).fill(0).map((_, index) => {
+    return {
+      id: index,
+      userName: `Edward King ${index}`,
+      age: 32,
+      address: `London, Park Lane no. ${index}`
+    };
+  });
+  this.updateEditCache();
+}
+
+
+
+  /**
+   * 打开新增面板
+   */
   open(): void {
     this.visible = true;
   }
 
 
-
+  /**
+   * 关闭新增面板
+   * @param e 
+   */
   close(e:MouseEvent= null): void {
     if(e!==null){
       e.preventDefault()
     };
-    this.validateForm.reset();
-    for (const key in this.validateForm.controls) {
-      this.validateForm.controls[key].markAsPristine();
-      this.validateForm.controls[key].updateValueAndValidity();
+    this.modalFrom.reset();
+    for (const key in this.modalFrom.controls) {
+      this.modalFrom.controls[key].markAsPristine();
+      this.modalFrom.controls[key].updateValueAndValidity();
     }
     this.visible = false;
 
@@ -69,20 +102,21 @@ export class UserComponent implements OnInit {
    */
    submitForm(value: User): void {
 
-    this.listOfData=[ {id:new Date().getTime(),
-      userName:this.validateForm.controls.userName.value,
-      age:this.validateForm.controls.age.value,
-      address:this.validateForm.controls.address.value
+    this.listOfData=[
+      {id:new Date().getTime(),
+      userName:this.modalFrom.controls.userName.value,
+      age:this.modalFrom.controls.age.value,
+      address:this.modalFrom.controls.address.value
     },
       ...this.listOfData
      ];
     this.updateEditCache();
-    this.validateForm.reset();
+    this.modalFrom.reset();
     //这里不会又一次触发formControl的异步校验事件
     //手动更改表单状态时，例如 markAsDirty 后，需要执行 updateValueAndValidity 通知 nz-form-control 进行状态变更。
-    for (const key in this.validateForm.controls) {
-      this.validateForm.controls[key].markAsDirty();
-      this.validateForm.controls[key].updateValueAndValidity();
+    for (const key in this.modalFrom.controls) {
+      this.modalFrom.controls[key].markAsDirty();
+      this.modalFrom.controls[key].updateValueAndValidity();
     }
     this.visible = false;
 
@@ -99,7 +133,6 @@ export class UserComponent implements OnInit {
           observer.next(null);
         }
         observer.complete();
-        console.log("校验名字")
       }, 1000);
   });
 
@@ -107,7 +140,7 @@ export class UserComponent implements OnInit {
   confirmValidator = (control :FormControl): {[s:string]:boolean} =>{
     if (!control.value) {
       return { error: true, required: true };
-    } else if (control.value !== this.validateForm.controls.password.value) {
+    } else if (control.value !== this.modalFrom.controls.password.value) {
       return { confirm: true, error: true };
     }
     return {};
@@ -115,67 +148,36 @@ export class UserComponent implements OnInit {
   }
 
   validateConfirmPassword(): void {
-    setTimeout(() => this.validateForm.controls.confirm.updateValueAndValidity());
+    setTimeout(() => this.modalFrom.controls.confirm.updateValueAndValidity());
   }
 
-  constructor(private nzMessageService:NzMessageService,private fb: FormBuilder) {
-      this.validateForm = this.fb.group({
-        userName:['',[Validators.required], [this.userNameAsyncValidator]],
-        age:['',[Validators.required]],
-        password:['',[Validators.required]],
-        confirm:['',[this.confirmValidator]],
-        gender:['',[Validators.required]],
-        account:['',[Validators.required]],
-        address:['',[Validators.required]]
-      });
-
-
-
-   }
-
-
-  listOfSelection = [
-    {
-      text: '选择所有行',
-      onSelect: () => {
-        this.onAllChecked(true);
-      }
-    },
-    {
-      text: '选择偶数行',
-      onSelect: () => {
-        this.listOfCurrentPageData.forEach((data, index) => this.updateCheckedSet(data.id, index % 2 !== 0));
-        this.refreshCheckedStatus();
-      }
-    },
-    {
-      text: '选择奇数行',
-      onSelect: () => {
-        this.listOfCurrentPageData.forEach((data, index) => this.updateCheckedSet(data.id, index % 2 === 0));
-        this.refreshCheckedStatus();
-      }
-    }
-  ];
-
-
-
-
-
-  startEdit(id: number): void {
+  
+  /**
+   * 编辑
+   * @param id 
+   */
+  editClick(id: number): void {
     this.editCache[id].edit = true;
-    console.log('this.editCache[id].data',this.editCache[id].data);
-
   }
 
 
+
+  /**
+   * 保存编辑
+   * @param id 
+   */
   saveEdit(id: number): void {
     const index = this.listOfData.findIndex(item => item.id === id);
+    //Object.assign方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象
     Object.assign(this.listOfData[index], this.editCache[id].data);
     this.editCache[id].edit = false;
-
     this.nzMessageService.info('编辑成功！');
   }
 
+  /**
+   * 取消编辑
+   * @param id 
+   */
   cancelEdit(id: number): void {
     const index = this.listOfData.findIndex(item => item.id === id);
     this.editCache[id] = {
@@ -184,17 +186,24 @@ export class UserComponent implements OnInit {
     };
   }
 
+  /**
+   * 删除
+   * @param id 
+   */
   delete(id:number):void{
     this.listOfData = this.listOfData.filter(d => d.id !== id);
     if(this.setOfCheckedId.has(id)){
       this.setOfCheckedId.delete(id);
     }
     this.nzMessageService.info("删除成功！");
-
   }
 
 
-
+  /**
+   * 修改选择的状态
+   * @param id 
+   * @param checked 
+   */
   updateCheckedSet(id: number, checked: boolean): void {
     if (checked) {
       this.setOfCheckedId.add(id);
@@ -203,48 +212,54 @@ export class UserComponent implements OnInit {
     }
   }
 
+  /**
+   * 选择一条记录
+   * @param id 
+   * @param checked 
+   */
   onItemChecked(id: number, checked: boolean): void {
-    console.log('onItemChecked',checked);
-
     this.updateCheckedSet(id, checked);
     this.refreshCheckedStatus();
   }
 
+  /**
+   * 选择所有
+   * @param value 
+   */
   onAllChecked(value: boolean): void {
-    console.log('onAllChecked',value);
-
     this.listOfCurrentPageData.forEach(item => this.updateCheckedSet(item.id, value));
     this.refreshCheckedStatus();
+  
   }
 
+  /**
+   * 
+   * @param $event 当前页面数据改变时 回调
+   */
   onCurrentPageDataChange($event: ItemData[]): void {
-    console.log('onCurrentPageDataChange',$event);
-
+  
     this.listOfCurrentPageData = $event;
     this.refreshCheckedStatus();
   }
 
-  refreshCheckedStatus(): void {
+
+  /**
+   * 刷新修改状态
+   */
+  private refreshCheckedStatus(): void {
+    //every 每一个都进行比较
     this.checked = this.listOfCurrentPageData.every(item => this.setOfCheckedId.has(item.id));
+    //some 只要有一个比较为true 就返回true
     this.indeterminate = this.listOfCurrentPageData.some(item => this.setOfCheckedId.has(item.id)) && !this.checked;
   }
 
-  ngOnInit(): void {
-    this.listOfData = new Array(20).fill(0).map((_, index) => {
-      return {
-        id: index,
-        userName: `Edward King ${index}`,
-        age: 32,
-        address: `London, Park Lane no. ${index}`
-      };
-    });
-    this.updateEditCache();
-    console.log('this.editCache',this.editCache);
+  
 
-  }
+  /**
+   * 更新数组编辑状态
+   */
+  private updateEditCache(): void {
 
-
-  updateEditCache(): void {
     this.listOfData.forEach(item => {
       this.editCache[item.id] = {
         edit: false,

@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { UserRoutingModule } from './user-routing.module';
 import { UserComponent } from './user.component';
 import { CommonModule } from '@angular/common';
-import { NgzerroModule } from 'src/app/ngzerro/ngzerro.module';
+import { ShareModule } from 'src/app/core/share.module';
 
 @NgModule({
   declarations: [UserComponent],
   imports: [
     UserRoutingModule,
-    NgzerroModule,
+    ShareModule,  
     CommonModule
   ],
   exports: [UserComponent]
