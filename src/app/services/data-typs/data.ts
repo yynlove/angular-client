@@ -11,3 +11,11 @@ export type User = {
   md5?:string;
   createTime?:number;
 }
+
+
+export type Result ={
+  httpStatus ?:string;
+  message?:string;
+  total?: number;
+  data?:any;
+}

@@ -106,7 +106,17 @@
 <br/>
 <br/>
 
-<nz-table class="inner-content" #rowSelectionTable nzShowSizeChanger  [nzFrontPagination]= false [nzData]="listOfData" [nzTotal]="100" (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
+<nz-table class="inner-content"
+          #rowSelectionTable
+          nzShowSizeChanger
+          [nzFrontPagination]= false
+          [nzLoading]="loading"
+          [nzData]="listOfData"
+          [nzTotal]="pageTotal"
+          [nzPageIndex]="pageIndex"
+          [nzPageSize]="pageSize"
+          (nzQueryParams)="onQueryParamsChange($event)"
+          (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
   <thead>
     <tr>
       <th

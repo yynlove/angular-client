@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { Observable, Observer } from 'rxjs';
 import { User } from 'src/app/services/data-typs/data';
 import { UserService } from 'src/app/services/user.service';
@@ -22,6 +23,10 @@ export class UserComponent implements OnInit {
   visible = false;
   editCache: { [key: number]: { edit: boolean; data: User } } = {};
   modalFrom : FormGroup;
+  pageIndex :number = 1;
+  pageSize :number = 10;
+  loading :boolean =true;
+  pageTotal:number ;
 
 
   constructor(private nzMessageService:NzMessageService,private fb: FormBuilder,private userService:UserService) {
@@ -39,16 +44,34 @@ export class UserComponent implements OnInit {
  }
 
 
- ngOnInit(): void {
-  this.userService.getUsersInfo().subscribe(user =>{
-    this.listOfData = user;
+ngOnInit(): void {
+  this.loadTableData(this.pageIndex,this.pageSize);  
+}
+
+/**
+ * 表格查询参数改变 调用
+ * @param params
+ */
+onQueryParamsChange(params:NzTableQueryParams):void{
+  const { pageIndex, pageSize } = params;
+  this.loadTableData(pageIndex,pageSize);
+}
+
+/**
+ * 加载表格数据
+ * @param pageIndex 页数 
+ * @param pageSize  每页数据
+ */
+loadTableData(pageIndex: number, pageSize: number) {
+  this.loading = true;
+  this.userService.getUsersInfo(pageIndex,pageSize).subscribe(result =>{
+    this.loading = false;
+    this.listOfData = result.data;
+    this.pageTotal = result.total;
     console.log('this.listOfData',this.listOfData);
     this.updateEditCache();
   });
-
-
 }
-
 
 
   /**
@@ -102,6 +125,48 @@ export class UserComponent implements OnInit {
 
   }
 
+  /**
+   * 编辑
+   * @param id
+   */
+  editClick(id: number): void {
+    this.editCache[id].edit = true;
+  }
+
+
+  
+  /**
+   * 保存编辑
+   * @param id
+   */
+  saveEdit(id: number): void {
+    const index = this.listOfData.findIndex(item => item.id === id);
+    //Object.assign方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象
+    this.userService.updateUser(this.editCache[id].data).subscribe(res =>{
+      console.log(res);
+    });
+    Object.assign(this.listOfData[index], this.editCache[id].data);
+    this.editCache[id].edit = false;
+    this.nzMessageService.info('编辑成功！');
+  }
+
+  /**
+   * 取消编辑
+   * @param id
+   */
+  cancelEdit(id: number): void {
+    const index = this.listOfData.findIndex(item => item.id === id);
+    this.editCache[id] = {
+      data: { ...this.listOfData[index] },
+      edit: false
+    };
+  }
+
+
+
+
+
+
 
   userNameAsyncValidator = (control:FormControl) =>
     new Observable((observer: Observer<ValidationErrors | null>) => {
@@ -132,39 +197,9 @@ export class UserComponent implements OnInit {
   }
 
 
-  /**
-   * 编辑
-   * @param id
-   */
-  editClick(id: number): void {
-    this.editCache[id].edit = true;
-  }
 
 
 
-  /**
-   * 保存编辑
-   * @param id
-   */
-  saveEdit(id: number): void {
-    const index = this.listOfData.findIndex(item => item.id === id);
-    //Object.assign方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象
-    Object.assign(this.listOfData[index], this.editCache[id].data);
-    this.editCache[id].edit = false;
-    this.nzMessageService.info('编辑成功！');
-  }
-
-  /**
-   * 取消编辑
-   * @param id
-   */
-  cancelEdit(id: number): void {
-    const index = this.listOfData.findIndex(item => item.id === id);
-    this.editCache[id] = {
-      data: { ...this.listOfData[index] },
-      edit: false
-    };
-  }
 
   /**
    * 删除

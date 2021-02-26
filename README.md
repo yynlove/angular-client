@@ -25,3 +25,9 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+
+
+## proxyconfig.json
+指定代理配置 并在angular.json 的serve 中proxyConfig配置中进行配置 ，相关资料：InjectionToken
