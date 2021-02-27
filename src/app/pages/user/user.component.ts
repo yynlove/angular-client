@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, of, timer } from 'rxjs';
+import { auditTime, distinctUntilChanged, sampleTime } from 'rxjs/internal/operators';
 import { User } from 'src/app/services/data-typs/data';
 import { UserService } from 'src/app/services/user.service';
 
@@ -32,12 +33,13 @@ export class UserComponent implements OnInit {
   constructor(private nzMessageService:NzMessageService,private fb: FormBuilder,private userService:UserService) {
 
     this.modalFrom = this.fb.group({
-      userName:['',[Validators.required], [this.userNameAsyncValidator]],
+      userName:['',[Validators.required]],
       age:['',[Validators.required]],
       password:['',[Validators.required]],
       confirm:['',[this.confirmValidator]],
       gender:['',[Validators.required]],
-      account:['',[Validators.required]],
+      //validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]} 变更默认值改变校验， 设置失去焦点 才进行访问api
+      account:['',{updateOn:'blur', validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]}],
       address:['',[Validators.required]]
     });
 
@@ -45,7 +47,6 @@ export class UserComponent implements OnInit {
 
 
 ngOnInit(): void {
-  this.loadTableData(this.pageIndex,this.pageSize);  
 }
 
 /**
@@ -59,7 +60,7 @@ onQueryParamsChange(params:NzTableQueryParams):void{
 
 /**
  * 加载表格数据
- * @param pageIndex 页数 
+ * @param pageIndex 页数
  * @param pageSize  每页数据
  */
 loadTableData(pageIndex: number, pageSize: number) {
@@ -68,7 +69,6 @@ loadTableData(pageIndex: number, pageSize: number) {
     this.loading = false;
     this.listOfData = result.data;
     this.pageTotal = result.total;
-    console.log('this.listOfData',this.listOfData);
     this.updateEditCache();
   });
 }
@@ -103,25 +103,31 @@ loadTableData(pageIndex: number, pageSize: number) {
    *
    * 新增提交表单
    */
-   submitForm(value: User): void {
-
-    this.listOfData=[
-      {id:new Date().getTime(),
-      userName:this.modalFrom.controls.userName.value,
-      age:this.modalFrom.controls.age.value,
-      address:this.modalFrom.controls.address.value
-    },
-      ...this.listOfData
-     ];
-    this.updateEditCache();
-    this.modalFrom.reset();
+   submitForm(user: User): void {
+    this.userService.insertOne(user).subscribe(res=>{
+      if(res){
+        this.loadTableData(this.pageIndex,this.pageSize);
+        this.modalFrom.reset();
+        this.visible = false;
+      }
+    });
+    // this.listOfData=[
+    //   {id:new Date().getTime(),
+    //   userName:this.modalFrom.controls.userName.value,
+    //   age:this.modalFrom.controls.age.value,
+    //   address:this.modalFrom.controls.address.value
+    // },
+    //   ...this.listOfData
+    //  ];
+    // this.updateEditCache();
+    // this.modalFrom.reset();
     //这里不会又一次触发formControl的异步校验事件
     //手动更改表单状态时，例如 markAsDirty 后，需要执行 updateValueAndValidity 通知 nz-form-control 进行状态变更。
-    for (const key in this.modalFrom.controls) {
-      this.modalFrom.controls[key].markAsDirty();
-      this.modalFrom.controls[key].updateValueAndValidity();
-    }
-    this.visible = false;
+    // for (const key in this.modalFrom.controls) {
+    //   this.modalFrom.controls[key].markAsDirty();
+    //   this.modalFrom.controls[key].updateValueAndValidity();
+    // }
+    // this.visible = false;
 
   }
 
@@ -134,7 +140,7 @@ loadTableData(pageIndex: number, pageSize: number) {
   }
 
 
-  
+
   /**
    * 保存编辑
    * @param id
@@ -143,11 +149,16 @@ loadTableData(pageIndex: number, pageSize: number) {
     const index = this.listOfData.findIndex(item => item.id === id);
     //Object.assign方法用于对象的合并，将源对象（source）的所有可枚举属性，复制到目标对象
     this.userService.updateUser(this.editCache[id].data).subscribe(res =>{
-      console.log(res);
-    });
-    Object.assign(this.listOfData[index], this.editCache[id].data);
-    this.editCache[id].edit = false;
-    this.nzMessageService.info('编辑成功！');
+      Object.assign(this.listOfData[index], this.editCache[id].data);
+      this.editCache[id].edit = false;
+      this.nzMessageService.info(res.message);
+    },(err => {
+      console.log("捕获错误",err);
+      this.editCache[id].edit = false;
+      this.nzMessageService.error('修改失败！');
+      })
+    );
+
   }
 
   /**
@@ -165,23 +176,50 @@ loadTableData(pageIndex: number, pageSize: number) {
 
 
 
-
-
-
-  userNameAsyncValidator = (control:FormControl) =>
-    new Observable((observer: Observer<ValidationErrors | null>) => {
-      setTimeout(() => {
-        if (control.value === 'yuanyenan') {
-          // you have to return `{error: true}` to mark it as an error event
-          observer.next({ error: true, duplicated: true });
-        } else {
-          observer.next(null);
+  /**
+   * 删除
+   * @param id
+   */
+  delete(id:number):void{
+    this.userService.deleteUserById(id).subscribe(res =>{
+      if(res){
+        this.listOfData = this.listOfData.filter(d => d.id !== id);
+        if(this.setOfCheckedId.has(id)){
+          this.setOfCheckedId.delete(id);
         }
-        observer.complete();
-      }, 1000);
+        this.nzMessageService.info("删除成功！");
+
+      }
+    });
+  }
+
+
+
+
+
+  /**
+   * 校验账户名
+   */
+  accountAsyncValidator = (control:FormControl) =>
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      timer(1000).subscribe(()=>{
+        this.userService.checkAccount(control.value).subscribe(res =>{
+          if(res>0){
+            observer.next({ error: true, duplicated: true });
+          }else{
+            observer.next(null);
+          }
+          observer.complete();
+      })
+      })
   });
 
 
+
+
+  /**
+   * 重复校验密码
+   */
   confirmValidator = (control :FormControl): {[s:string]:boolean} =>{
     if (!control.value) {
       return { error: true, required: true };
@@ -189,29 +227,20 @@ loadTableData(pageIndex: number, pageSize: number) {
       return { confirm: true, error: true };
     }
     return {};
-
   }
-
-  validateConfirmPassword(): void {
-    setTimeout(() => this.modalFrom.controls.confirm.updateValueAndValidity());
-  }
-
-
-
-
-
-
   /**
-   * 删除
-   * @param id
+   * 密码改变 更新校验
+   * 该配置项会决定控件如何传播变更并发出事件
    */
-  delete(id:number):void{
-    this.listOfData = this.listOfData.filter(d => d.id !== id);
-    if(this.setOfCheckedId.has(id)){
-      this.setOfCheckedId.delete(id);
-    }
-    this.nzMessageService.info("删除成功！");
+  validateConfirmPassword(): void {
+    timer(2000).subscribe(() => this.modalFrom.controls.confirm.updateValueAndValidity());
+
   }
+
+
+
+
+
 
 
   /**

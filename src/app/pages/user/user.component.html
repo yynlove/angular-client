@@ -13,26 +13,27 @@
           <div nz-col nzSpan="12">
             <nz-form-item>
               <nz-form-label nzRequired>姓名</nz-form-label>
-              <nz-form-control nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+              <nz-form-control>
                 <input nz-input formControlName="userName" placeholder="请输入姓名" />
-                <ng-template #userErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    请输入姓名!
-                  </ng-container>
-                  <ng-container *ngIf="control.hasError('duplicated')">
-                    姓名已存在！
-                  </ng-container>
-                </ng-template>
               </nz-form-control>
             </nz-form-item>
           </div>
           <div nz-col nzSpan="12">
             <nz-form-item>
-              <nz-form-label>年龄</nz-form-label>
-              <nz-form-control>
-                <input nz-input formControlName="age" placeholder="请输入年龄" />
+              <nz-form-label nzRequired="true" >账户名</nz-form-label>
+              <nz-form-control nzHasFeedback nzValidatingTip="Validating..."  [nzErrorTip]="userErrorTpl">
+                <input nz-input formControlName="account" placeholder="请输入账户名" />
+                <ng-template #userErrorTpl let-control>
+                  <ng-container *ngIf="control.hasError('required')">
+                    请输入账户!
+                  </ng-container>
+                  <ng-container *ngIf="control.hasError('duplicated')">
+                    账户已存在！
+                  </ng-container>
+                </ng-template>
               </nz-form-control>
             </nz-form-item>
+
           </div>
         </div>
         <div nz-row [nzGutter]="8">
@@ -67,17 +68,17 @@
               <nz-form-label>性别</nz-form-label>
               <nz-form-control>
                 <nz-radio-group formControlName="gender">
-                  <label nz-radio nzValue="男">男</label>
-                  <label nz-radio nzValue="女">女</label>
+                  <label nz-radio nzValue="1">男</label>
+                  <label nz-radio nzValue="2">女</label>
                 </nz-radio-group>
               </nz-form-control>
             </nz-form-item>
           </div>
           <div nz-col nzSpan="12">
             <nz-form-item>
-              <nz-form-label nzRequired="true" >账户名</nz-form-label>
-              <nz-form-control nzHasFeedback>
-                <input nz-input formControlName="account" placeholder="请输入账户名" />
+              <nz-form-label>年龄</nz-form-label>
+              <nz-form-control>
+                <input nz-input formControlName="age" placeholder="请输入年龄" />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -92,16 +93,13 @@
             </nz-form-item>
           </div>
         </div>
-
         <button nz-button  nzType="primary" [disabled]="!modalFrom.valid">提交</button>
-        <ng-template #footerTpl>
-
-              <div style="float: right">
-                <button nz-button style="margin-right: 8px;" (click)="close($event)">关闭</button>
-              </div>
-
-        </ng-template>
       </form>
+      <ng-template #footerTpl>
+        <div style="float: right">
+          <button nz-button style="margin-right: 8px;" (click)="close($event)">关闭</button>
+        </div>
+      </ng-template>
     </nz-drawer>
 <br/>
 <br/>
@@ -125,7 +123,7 @@
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
       <th>姓名</th>
-      <th>md5</th>
+      <th>账户</th>
       <th>创建时间</th>
       <th nzRight="right">操作</th>
     </tr>
@@ -135,8 +133,8 @@
       <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
         <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
         <td>{{ data.userName }}</td>
-        <td>{{ data.md5 }}</td>
-        <td>{{ data.createTime }}</td>
+        <td>{{ data.account }}</td>
+        <td>{{ data.createTime | date: "yyyy-MM-dd" }}</td>
         <td><button nz-button nzType="default" (click)="editClick(data.id)">编辑</button>
           <button nz-button nzType="default" nzDanger nz-popconfirm nzPopconfirmTitle="确定要删除吗?" (nzOnConfirm)="delete(data.id)">删除</button>
         </td>
@@ -144,8 +142,8 @@
       <ng-template #editTemplate>
         <td></td>
         <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.userName" /></td>
-        <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.md5" /></td>
-        <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.createTime" /></td>
+        <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.account" /></td>
+        <td><nz-date-picker  [(ngModel)]="editCache[data.id].data.createTime"></nz-date-picker></td>
         <td>
           <button nz-button nzType="default" (click)="saveEdit(data.id)" class="save">保存</button>
           <button nz-button nzType="default" nz-popconfirm nzPopconfirmTitle="确定取消编辑?" (nzOnConfirm)="cancelEdit(data.id)">取消编辑</button>

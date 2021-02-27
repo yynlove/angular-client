@@ -10,6 +10,7 @@ export type User = {
   passWord?:string;
   md5?:string;
   createTime?:number;
+  gender?:number;
 }
 
 
