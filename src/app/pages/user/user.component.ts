@@ -3,7 +3,6 @@ import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } fro
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
 import { Observable, Observer, of, timer } from 'rxjs';
-import { auditTime, distinctUntilChanged, sampleTime } from 'rxjs/internal/operators';
 import { User } from 'src/app/services/data-typs/data';
 import { UserService } from 'src/app/services/user.service';
 
@@ -15,38 +14,50 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit {
-
+  //是否选中
   checked = false;
+  //账户校验状态
   indeterminate = false;
   listOfCurrentPageData: User[];
+  //数据表格数据
   listOfData: User[];
   setOfCheckedId = new Set<number>();
   visible = false;
   editCache: { [key: number]: { edit: boolean; data: User } } = {};
+  //新增数据表单
   modalFrom : FormGroup;
   pageIndex :number = 1;
   pageSize :number = 10;
+  //数据是否加载中
   loading :boolean =true;
+  //数据总条数
   pageTotal:number ;
+  //查询表单
+  searchForm:FormGroup;
 
 
   constructor(private nzMessageService:NzMessageService,private fb: FormBuilder,private userService:UserService) {
 
-    this.modalFrom = this.fb.group({
-      userName:['',[Validators.required]],
-      age:['',[Validators.required]],
-      password:['',[Validators.required]],
-      confirm:['',[this.confirmValidator]],
-      gender:['',[Validators.required]],
-      //validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]} 变更默认值改变校验， 设置失去焦点 才进行访问api
-      account:['',{updateOn:'blur', validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]}],
-      address:['',[Validators.required]]
-    });
-
- }
+  }
 
 
 ngOnInit(): void {
+  this.modalFrom = this.fb.group({
+    userName:['',[Validators.required]],
+    age:['',[Validators.required]],
+    password:['',[Validators.required]],
+    confirm:['',[this.confirmValidator]],
+    gender:['',[Validators.required]],
+    //validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]} 变更默认值改变校验， 设置失去焦点 才进行访问api
+    account:['',{updateOn:'blur', validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]}],
+    address:['',[Validators.required]]
+  });
+
+  this.searchForm = this.fb.group({
+    userName:[''],
+    account:[''],
+    age:['']
+  })
 }
 
 /**
@@ -63,9 +74,9 @@ onQueryParamsChange(params:NzTableQueryParams):void{
  * @param pageIndex 页数
  * @param pageSize  每页数据
  */
-loadTableData(pageIndex: number, pageSize: number) {
+loadTableData(pageIndex: number, pageSize: number,account='',userName='',age='') {
   this.loading = true;
-  this.userService.getUsersInfo(pageIndex,pageSize).subscribe(result =>{
+  this.userService.getUsersInfo(pageIndex,pageSize,account,userName,age).subscribe(result =>{
     this.loading = false;
     this.listOfData = result.data;
     this.pageTotal = result.total;
@@ -111,25 +122,13 @@ loadTableData(pageIndex: number, pageSize: number) {
         this.visible = false;
       }
     });
-    // this.listOfData=[
-    //   {id:new Date().getTime(),
-    //   userName:this.modalFrom.controls.userName.value,
-    //   age:this.modalFrom.controls.age.value,
-    //   address:this.modalFrom.controls.address.value
-    // },
-    //   ...this.listOfData
-    //  ];
-    // this.updateEditCache();
-    // this.modalFrom.reset();
-    //这里不会又一次触发formControl的异步校验事件
-    //手动更改表单状态时，例如 markAsDirty 后，需要执行 updateValueAndValidity 通知 nz-form-control 进行状态变更。
-    // for (const key in this.modalFrom.controls) {
-    //   this.modalFrom.controls[key].markAsDirty();
-    //   this.modalFrom.controls[key].updateValueAndValidity();
-    // }
-    // this.visible = false;
-
   }
+
+
+  submitSearchForm(user:User) : void{
+    this.loadTableData(this.pageIndex,this.pageSize,user.account,user.userName,user.age.toString());
+  }
+
 
   /**
    * 编辑

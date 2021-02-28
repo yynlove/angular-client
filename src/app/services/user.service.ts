@@ -19,9 +19,14 @@ export class UserService {
   /**
    * 获取所有用户信息
    */
-  getUsersInfo(pageIndex:number,pageSize:number):Observable<Result>{
+  getUsersInfo(pageIndex:number,pageSize:number,account,userName,age):Observable<Result>{
 
-    let params = new HttpParams().append('pageIndex',pageIndex.toString()).append('pageSize',pageSize.toString());
+    let params = new HttpParams()
+    .append('pageIndex',pageIndex.toString())
+    .append('pageSize',pageSize.toString())
+    .append('account',account)
+    .append('userName',userName)
+    .append('age',age.toString());
     return this.httpClient.get(this.url+'users/listUsers',{params}).pipe(map((res: Result)=>res));
 
   }

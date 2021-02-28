@@ -1,6 +1,10 @@
-<div class="login-container">
-  <div class="box">
 
+  <div class="image">
+      <!-- 图片大家可以自选电脑里任意，以写好调整图片大小css代码 -->
+      <img src="../../assets/image/login.jpg" alt="">
+  </div>
+  <div class="box">
+    <h3>ADMIN</h3>
   <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
     <nz-form-item>
       <nz-form-control nzErrorTip="Please input your username!">
@@ -27,7 +31,7 @@
       </div>
     </div>
     <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">登录</button>
+    <button nz-button class="login-form-button login-form-margin" [nzType]="'primary'">注册</button>
   </form>
-
   </div>
-</div>
+

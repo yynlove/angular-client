@@ -1,4 +1,36 @@
-<button class="top" nz-button nzType="primary" (click)="open()">新增</button>
+
+<form nz-form [formGroup]="searchForm" class="top" (ngSubmit)="submitSearchForm(searchForm.value)">
+  <div nz-row [nzGutter]="24">
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-label>姓名</nz-form-label>
+        <nz-form-control>
+          <input nz-input  formControlName="userName" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-label>账户</nz-form-label>
+        <nz-form-control>
+          <input nz-input  formControlName="account" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-label>年龄</nz-form-label>
+        <nz-form-control>
+          <input nz-input-number formControlName="age" />
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="6">
+      <button nz-button [nzType]="'primary'">查询</button>
+      <button nz-button nzType="primary" (click)="open()">新增</button>
+    </div>
+  </div>
+</form>
    <nz-drawer
       [nzBodyStyle]="{ overflow: 'auto' }"
       [nzMaskClosable]="true"
@@ -78,7 +110,7 @@
             <nz-form-item>
               <nz-form-label>年龄</nz-form-label>
               <nz-form-control>
-                <input nz-input formControlName="age" placeholder="请输入年龄" />
+                <input nz-input-number formControlName="age" placeholder="请输入年龄" />
               </nz-form-control>
             </nz-form-item>
           </div>
@@ -101,9 +133,6 @@
         </div>
       </ng-template>
     </nz-drawer>
-<br/>
-<br/>
-
 <nz-table class="inner-content"
           #rowSelectionTable
           nzShowSizeChanger
@@ -113,6 +142,7 @@
           [nzTotal]="pageTotal"
           [nzPageIndex]="pageIndex"
           [nzPageSize]="pageSize"
+          nzSize="small"
           (nzQueryParams)="onQueryParamsChange($event)"
           (nzCurrentPageDataChange)="onCurrentPageDataChange($event)">
   <thead>
@@ -122,18 +152,26 @@
         [nzIndeterminate]="indeterminate"
         (nzCheckedChange)="onAllChecked($event)"
       ></th>
+      <th></th>
       <th>姓名</th>
       <th>账户</th>
+      <th>性别</th>
+      <th>年龄</th>
+      <th>住址</th>
       <th>创建时间</th>
       <th nzRight="right">操作</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let data of rowSelectionTable.data">
+    <tr *ngFor="let data of rowSelectionTable.data;let i = index">
       <ng-container *ngIf="!editCache[data.id].edit; else editTemplate">
         <td [nzChecked]="setOfCheckedId.has(data.id)" (nzCheckedChange)="onItemChecked(data.id, $event)"></td>
+        <td>{{pageSize*(pageIndex-1)+(i+1)}}</td>
         <td>{{ data.userName }}</td>
         <td>{{ data.account }}</td>
+        <td>{{ data.gender| genderFormat }}</td>
+        <td>{{ data.age }}</td>
+        <td>{{ data.address }}</td>
         <td>{{ data.createTime | date: "yyyy-MM-dd" }}</td>
         <td><button nz-button nzType="default" (click)="editClick(data.id)">编辑</button>
           <button nz-button nzType="default" nzDanger nz-popconfirm nzPopconfirmTitle="确定要删除吗?" (nzOnConfirm)="delete(data.id)">删除</button>
@@ -141,8 +179,17 @@
       </ng-container>
       <ng-template #editTemplate>
         <td></td>
+        <td></td>
         <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.userName" /></td>
         <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.account" /></td>
+        <td>
+            <nz-radio-group [(ngModel)]="editCache[data.id].data.gender">
+              <label nz-radio nzValue="1">男</label>
+              <label nz-radio nzValue="2">女</label>
+            </nz-radio-group>
+        </td>
+        <td><input nz-input-number  [(ngModel)]="editCache[data.id].data.age" /></td>
+        <td><input type="text" nz-input [(ngModel)]="editCache[data.id].data.address" /></td>
         <td><nz-date-picker  [(ngModel)]="editCache[data.id].data.createTime"></nz-date-picker></td>
         <td>
           <button nz-button nzType="default" (click)="saveEdit(data.id)" class="save">保存</button>

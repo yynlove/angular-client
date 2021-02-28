@@ -15,6 +15,7 @@ import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzTimePickerModule } from 'ng-zorro-antd/time-picker';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 
 @NgModule({
   declarations: [],
@@ -35,7 +36,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     NzMenuModule,
     NzIconModule,
     NzTimePickerModule,
-    NzDatePickerModule
+    NzDatePickerModule,
+    NzInputNumberModule
   ],
   exports:[
     FormsModule,
@@ -54,7 +56,8 @@ import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
     NzMenuModule,
     NzIconModule,
     NzTimePickerModule,
-    NzDatePickerModule
+    NzDatePickerModule,
+    NzInputNumberModule
   ]
 })
 export class ShareModule { }

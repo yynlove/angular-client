@@ -2,7 +2,7 @@
 /**
  * 用户表
  */
-export type User = {
+export class User{
   id?:number;
   userName?:string;
   age?:number;
@@ -11,6 +11,7 @@ export type User = {
   md5?:string;
   createTime?:number;
   gender?:number;
+  account?:string;
 }
 
 
