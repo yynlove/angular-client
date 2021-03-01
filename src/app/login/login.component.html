@@ -5,11 +5,11 @@
   </div>
   <div class="box">
     <h3>ADMIN</h3>
-  <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm()">
+  <form nz-form [formGroup]="loginForm" class="login-form" (ngSubmit)="submitForm(loginForm.value)">
     <nz-form-item>
-      <nz-form-control nzErrorTip="Please input your username!">
+      <nz-form-control nzErrorTip="Please input your account!">
         <nz-input-group nzPrefixIcon="user">
-          <input type="text" nz-input formControlName="userName" placeholder="账号" />
+          <input type="text" nz-input formControlName="account" placeholder="账号" />
         </nz-input-group>
       </nz-form-control>
     </nz-form-item>

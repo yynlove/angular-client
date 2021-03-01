@@ -12,6 +12,7 @@ export class User{
   createTime?:number;
   gender?:number;
   account?:string;
+  remember?:number;
 }
 
 

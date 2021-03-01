@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { zh_CN } from 'ng-zorro-antd/i18n';
@@ -13,6 +13,7 @@ import { NzIconModule, NZ_ICONS } from 'ng-zorro-antd/icon';
 import { ShareModule } from './share.module';
 import { ServicesModule } from '../services/services.module';
 import { PagesModule } from '../pages/pages.module';
+import { DelonAuthModule, JWTInterceptor } from '@delon/auth';
 
 const icons = [MenuFoldOutline, MenuUnfoldOutline, DashboardOutline, FormOutline];
 
@@ -22,7 +23,8 @@ registerLocaleData(zh);
   declarations: [],
   imports: [
     CommonModule,
-    NzIconModule
+    NzIconModule,
+    DelonAuthModule
   ],
   exports:[
     BrowserModule,
@@ -35,7 +37,8 @@ registerLocaleData(zh);
   ],
   providers: [
     { provide: NZ_I18N, useValue: zh_CN },
-    { provide: NZ_ICONS, useValue: icons }
+    { provide: NZ_ICONS, useValue: icons },
+    { provide:HTTP_INTERCEPTORS,useClass:JWTInterceptor,multi:true}
   ],
 })
 export class CoreModule { }

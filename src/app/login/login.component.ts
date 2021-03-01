@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { User } from '../services/data-typs/data';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -7,22 +10,27 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  validateForm!: FormGroup;
+  loginForm : FormGroup;
 
-  submitForm(): void {
-    for (const i in this.validateForm.controls) {
-      this.validateForm.controls[i].markAsDirty();
-      this.validateForm.controls[i].updateValueAndValidity();
-    }
-  }
 
-  constructor(private fb: FormBuilder) {}
+
+  constructor(
+    private fb: FormBuilder,
+    private userService:UserService,
+    private router:Router) {}
 
   ngOnInit(): void {
-    this.validateForm = this.fb.group({
-      userName: [null, [Validators.required]],
+    this.loginForm = this.fb.group({
+      account: [null, [Validators.required]],
       password: [null, [Validators.required]],
       remember: [true]
     });
+  }
+
+  submitForm(user:User): void {
+    this.userService.login(user).subscribe(res =>{
+      console.log(res);
+      this.router.navigate(['/home']);
+    })
   }
 }

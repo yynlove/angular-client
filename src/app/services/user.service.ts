@@ -1,5 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { DA_STORE_TOKEN, ITokenService, JWTTokenModel } from '@delon/auth';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/internal/operators';
 import { Result, User } from './data-typs/data';
@@ -13,7 +14,12 @@ export class UserService {
 
 
 
-  constructor(private httpClient: HttpClient , @Inject(API_CONFIG) private url: string) { }
+  constructor(
+    private httpClient: HttpClient,
+    @Inject(API_CONFIG) private url: string,
+    @Inject(DA_STORE_TOKEN) private tokenService :ITokenService) {
+      console.log('token:',tokenService.get(JWTTokenModel).token);
+     }
 
 
   /**
@@ -56,10 +62,22 @@ export class UserService {
    return this.httpClient.post(this.url+'users/insertOne',user).pipe(map((res:number) => res));
   }
 
-
+  /**
+   * 删除一个用户
+   * @param id
+   */
   deleteUserById(id: number):Observable<number> {
     const params = new HttpParams().append('id',id.toString());
     return this.httpClient.delete(this.url+'users/deleteUserById',{params}).pipe(map((res:number)=>res));
+  }
+
+
+  /**
+   * 登录
+   * @param error
+   */
+  login(user:User):Observable<User>{
+    return this.httpClient.post(this.url+'users/login',user).pipe(map((res:User) => res ));
   }
 
 

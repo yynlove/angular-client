@@ -30,4 +30,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 
 ## proxyconfig.json
-指定代理配置 并在angular.json 的serve 中proxyConfig配置中进行配置 ，相关资料：InjectionToken
+指定代理配置  跨域访问 并在angular.json 的serve 中proxyConfig配置中进行配置 ，相关资料：InjectionToken
+## 使用Delon 认用户认证
+安装 npm add @delon/auth
+
