@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { HomeModule } from './home/home.module';
+import { PortalModule } from './portal/portal.module';
 import { UserModule } from './user/user.module';
 import { WelcomeModule } from './welcome/welcome.module';
 
@@ -11,12 +11,14 @@ import { WelcomeModule } from './welcome/welcome.module';
   imports: [
     HomeModule,
     UserModule,
-    WelcomeModule
+    WelcomeModule,
+    PortalModule
   ],
   exports:[
     HomeModule,
     UserModule,
-    WelcomeModule
+    WelcomeModule,
+    PortalModule
   ]
 })
 export class PagesModule { }

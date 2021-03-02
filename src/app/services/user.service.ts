@@ -1,6 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { DA_STORE_TOKEN, ITokenService, JWTTokenModel } from '@delon/auth';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/internal/operators';
 import { Result, User } from './data-typs/data';
@@ -16,10 +15,9 @@ export class UserService {
 
   constructor(
     private httpClient: HttpClient,
-    @Inject(API_CONFIG) private url: string,
-    @Inject(DA_STORE_TOKEN) private tokenService :ITokenService) {
-      console.log('token:',tokenService.get(JWTTokenModel).token);
-     }
+    @Inject(API_CONFIG) private url: string) {
+    
+    }
 
 
   /**
@@ -42,7 +40,7 @@ export class UserService {
    * @param data
    */
   updateUser(data: User):Observable<Result> {
-    return this.httpClient.put(this.url+'users/updateUser',data).pipe(catchError(this.handleError));
+    return this.httpClient.put(this.url+'users/updateUser',data).pipe(map((res:Result) => res ));
   }
 
 
@@ -77,26 +75,27 @@ export class UserService {
    * @param error
    */
   login(user:User):Observable<User>{
-    return this.httpClient.post(this.url+'users/login',user).pipe(map((res:User) => res ));
+    return this.httpClient.post(this.url+'users/login',user).pipe(catchError(this.handleError),map((res:Result) => {
+      return res.data;
+    } ));
   }
 
 
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
-      // A client-side or network error occurred. Handle it accordingly.
+      // 客户端也可能出现问题，例如网络错误会让请求无法成功完成，或者 RxJS 操作符也会抛出异常。这些错误会产生 JavaScript 的 ErrorEvent 对象
       console.error('An error occurred:', error.error.message);
     } else {
-      // The backend returned an unsuccessful response code.
-      // The response body may contain clues as to what went wrong.
+      // 服务器端可能会拒绝该请求，并返回状态码为 404 或 500 的 HTTP 响应。这些是错误响应。
       console.error(
         `Backend returned code ${error.status}, ` +
         `body was: ${error.error}`);
     }
     // Return an observable with a user-facing error message.
-    return throwError(
-      'Something bad happened; please try again later.');
+    return throwError('Something bad happened; please try again later.');
   }
+
 
 
 

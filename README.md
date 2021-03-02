@@ -32,5 +32,14 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ## proxyconfig.json
 指定代理配置  跨域访问 并在angular.json 的serve 中proxyConfig配置中进行配置 ，相关资料：InjectionToken
 ## 使用Delon 认用户认证
-安装 npm add @delon/auth
+安装 npm i @delon/auth
 
+
+## 删除node_modulesnpm
+提供一个包 remove-node-modules 来帮助删除 node_modules
+删除  当前项目根目录下输入 remove-node-modules ，即可删除 node_modules 文件夹。
+## 清楚缓存
+npm cache clean --force
+## 查看源
+npm config get registry 
+npm install -g cnpm --registry=https://registry.npm.taobao.org

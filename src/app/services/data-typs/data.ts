@@ -9,10 +9,11 @@ export class User{
   address?:string;
   passWord?:string;
   md5?:string;
-  createTime?:number;
+  createTime?:Date;
   gender?:number;
   account?:string;
   remember?:number;
+  token?:string;
 }
 
 

@@ -40,7 +40,8 @@
       [nzFooter]="footerTpl"
       (nzOnClose)="close()"
     >
-      <form nz-form [formGroup]="modalFrom" (ngSubmit)="submitForm(modalFrom.value)">
+
+      <form *nzDrawerContent  nz-form [formGroup]="modalFrom" (ngSubmit)="submitForm(modalFrom.value)">
         <div nz-row [nzGutter]="8">
           <div nz-col nzSpan="12">
             <nz-form-item>

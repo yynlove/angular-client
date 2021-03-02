@@ -24,7 +24,8 @@ registerLocaleData(zh);
   imports: [
     CommonModule,
     NzIconModule,
-    DelonAuthModule
+    DelonAuthModule,
+    
   ],
   exports:[
     BrowserModule,
@@ -33,7 +34,8 @@ registerLocaleData(zh);
     AppRoutingModule,
     ShareModule,
     ServicesModule,
-    PagesModule
+    PagesModule,
+    
   ],
   providers: [
     { provide: NZ_I18N, useValue: zh_CN },
