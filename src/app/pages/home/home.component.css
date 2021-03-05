@@ -61,11 +61,13 @@ nz-header {
   z-index: 2;
 }
 
+.bgColor{
+  background: #fff;
+}
 .app-header {
   position: relative;
   height: 64px;
   padding: 0;
-  background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 }
 
@@ -78,4 +80,9 @@ nz-content {
   padding: 0px;
   background: #fff;
   height: 100%;
+}
+
+.avatar{
+  color:#f56a00;
+  background-color:#fde3cf;
 }

@@ -1,5 +1,6 @@
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/internal/operators';
 import { Result, User } from './data-typs/data';
@@ -15,8 +16,9 @@ export class UserService {
 
   constructor(
     private httpClient: HttpClient,
-    @Inject(API_CONFIG) private url: string) {
-    
+    @Inject(API_CONFIG) private url: string,
+    ) {
+      
     }
 
 
@@ -74,10 +76,18 @@ export class UserService {
    * 登录
    * @param error
    */
-  login(user:User):Observable<User>{
-    return this.httpClient.post(this.url+'users/login',user).pipe(catchError(this.handleError),map((res:Result) => {
-      return res.data;
-    } ));
+  // login(user:User):Observable<any>{
+  //   return this.httpClient.post(this.url+'users/login',user).pipe(catchError(this.handleError)
+  //   ,map((res:Result) => {
+  //     return res.data;
+  //   }));
+  // }
+
+
+  login(user:User):Observable<HttpResponse<Object>>{
+     return this.httpClient.post(this.url + 'users/login', user, { observe: 'response' }).pipe(catchError(this.handleError),map((res:HttpResponse<Object>)=>{
+       return res;
+     }));
   }
 
 

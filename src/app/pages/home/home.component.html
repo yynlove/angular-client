@@ -36,14 +36,15 @@
     </ul>
   </nz-sider>
   <nz-layout>
-    <nz-header>
-      <div class="app-header">
-        <span class="header-trigger" (click)="isCollapsed = !isCollapsed">
-            <i class="trigger"
-               nz-icon
-               [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
+    <nz-header  nz-row>
+      <div class="app-header bgColor" nz-col nzSpan="22">         
+        <span class="header-trigger"  (click)="isCollapsed = !isCollapsed">
+            <i class="trigger"nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"
             ></i>
         </span>
+      </div>
+      <div class="bgColor" nz-col nzSpan="2">
+        <nz-avatar  nzSize="large"  nzText="A" class="avatar"></nz-avatar>
       </div>
     </nz-header>
     <nz-content>

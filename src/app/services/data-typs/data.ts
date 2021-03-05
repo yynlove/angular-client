@@ -2,7 +2,7 @@
 /**
  * 用户表
  */
-export class User{
+export type User ={
   id?:number;
   userName?:string;
   age?:number;
@@ -23,3 +23,6 @@ export type Result ={
   total?: number;
   data?:any;
 }
+
+
+export enum ModelType {"Login","Register"}

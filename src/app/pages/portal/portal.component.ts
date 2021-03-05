@@ -1,10 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DA_SERVICE_TOKEN, ITokenService, JWTTokenModel } from '@delon/auth';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { User } from '../../services/data-typs/data';
+import { ModelType, User } from '../../services/data-typs/data';
 import { UserService } from '../../services/user.service';
+
 
 @Component({
   selector: 'app-portal',
@@ -13,32 +13,38 @@ import { UserService } from '../../services/user.service';
 })
 export class PortalComponent implements OnInit {
 
-  loginForm : FormGroup;
-  
+  currentModalType = ModelType.Login;
+
   constructor(
-    private fb: FormBuilder,
     private userService:UserService,
     private router:Router,
-    @Inject(DA_SERVICE_TOKEN) private iTokenService: ITokenService,
-    private nzMessageService:NzMessageService) {
-
+    private nzMessageService:NzMessageService,
+    @Inject(DA_SERVICE_TOKEN) private iTokenService: ITokenService,) {
+      iTokenService.refresh.subscribe(iTM=>{
+        console.log("过期");
+      })
     }
 
   ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      account: [null, [Validators.required]],
-      password: [null, [Validators.required]],
-      remember: [true]
-    });
+    
   }
 
-  submitForm(user:User): void {
+  login(user:User): void {
     this.userService.login(user).subscribe(res =>{
-      this.iTokenService.set({token: res.token});
+      const token = res.headers.get('authorization');
+      this.iTokenService.set({token});
       this.router.navigate(['/home/']);
+      
     },(error)=>{
       this.nzMessageService.error('密码错误');
     })
   }
 
+
+  modelChange(str :string){
+    this.currentModalType = ModelType[str];
+    console.log(this.currentModalType)
+  }
+
+  
 }
