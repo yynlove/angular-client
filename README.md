@@ -37,6 +37,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## 删除node_modules
 npm提供一个包 remove-node-modules 来帮助删除 node_modules
+npm i -g remove-node-modules
 删除  当前项目根目录下输入 remove-node-modules ，即可删除 node_modules 文件夹。
 ## 清楚缓存
 npm cache clean --force
