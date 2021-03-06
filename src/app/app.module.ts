@@ -7,7 +7,7 @@ import { CoreModule } from './core/core.module';
     AppComponent
   ],
   imports: [
-    CoreModule,
+    CoreModule
   ],
   bootstrap: [AppComponent]
 })

@@ -18,7 +18,7 @@ export class UserService {
     private httpClient: HttpClient,
     @Inject(API_CONFIG) private url: string,
     ) {
-      
+
     }
 
 
@@ -76,19 +76,12 @@ export class UserService {
    * 登录
    * @param error
    */
-  // login(user:User):Observable<any>{
-  //   return this.httpClient.post(this.url+'users/login',user).pipe(catchError(this.handleError)
-  //   ,map((res:Result) => {
-  //     return res.data;
-  //   }));
-  // }
-
-
   login(user:User):Observable<HttpResponse<Object>>{
-     return this.httpClient.post(this.url + 'users/login', user, { observe: 'response' }).pipe(catchError(this.handleError),map((res:HttpResponse<Object>)=>{
-       return res;
-     }));
+     return this.httpClient.post(this.url + 'users/login', user, { observe: 'response' })
+     .pipe(catchError(this.handleError),map((res:HttpResponse<Object>)=> res));
   }
+
+
 
 
 

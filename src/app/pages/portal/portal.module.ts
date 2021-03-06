@@ -8,6 +8,7 @@ import { CommonModule } from '@angular/common';
 
 
 
+
 @NgModule({
   declarations: [PortalComponent, LoginComponent, RegisterComponent],
   imports: [
@@ -15,10 +16,11 @@ import { CommonModule } from '@angular/common';
     PortalRoutingModule,
     ShareModule
   ],
-  exports:[
+  exports: [
     PortalComponent,
     LoginComponent,
     RegisterComponent
   ]
 })
-export class PortalModule { }
+export class PortalModule {
+}

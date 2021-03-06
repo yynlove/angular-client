@@ -45,7 +45,9 @@ npm cache clean --force
 npm config get registry 
 npm install -g cnpm --registry=https://registry.npm.taobao.org
 
-
+###  状态管理  @ngrx/store
+1. npm install @ngrx/store --save
+2. npm install @ngrx/store-devtools --save  浏览器安装Redux DevTools 插件
 
 
 

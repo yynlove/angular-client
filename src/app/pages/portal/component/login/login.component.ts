@@ -10,12 +10,14 @@ import { ModelType, User } from 'src/app/services/data-typs/data';
 export class LoginComponent implements OnInit {
 
   loginForm : FormGroup;
-  
-  @Output() onLogin =new EventEmitter<any>();  
+
+  @Output() onLogin =new EventEmitter<any>();
 
   @Output() onModelTypeChange = new EventEmitter<number>();
 
-  constructor( private fb: FormBuilder,) { }
+  constructor(
+    private fb: FormBuilder,
+    ) { }
 
 
 

@@ -17,6 +17,22 @@ export type User ={
 }
 
 
+/**
+ * 菜单
+ */
+export type Menu ={
+  id?:number;
+  title?:string;
+  link?:string;
+  pid?:number;
+  orderNo?:number;
+  createTime?:Date;
+  isValid?:number;
+
+  children?:Menu[];
+}
+
+
 export type Result ={
   httpStatus ?:string;
   message?:string;
