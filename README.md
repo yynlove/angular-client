@@ -43,3 +43,17 @@ npm cache clean --force
 ## 查看源
 npm config get registry 
 npm install -g cnpm --registry=https://registry.npm.taobao.org
+
+
+## git切换分支
+1) 切换到基础分支，如主干
+  git checkout master
+
+2）创建并切换到新分支
+  git checkout -b a10
+  git branch可以看到已经在panda分支上
+
+3)更新分支代码并提交
+  git add *
+  git commit -m "init a10"
+  git push origin a10
