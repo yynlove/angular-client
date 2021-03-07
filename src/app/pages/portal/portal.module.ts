@@ -14,7 +14,8 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     PortalRoutingModule,
-    ShareModule
+    ShareModule,
+
   ],
   exports: [
     PortalComponent,

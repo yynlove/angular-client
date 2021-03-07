@@ -13,23 +13,10 @@
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="系统管理" nzIcon="setting">
+      <li nz-submenu nzOpen [nzTitle]="item.title" nzIcon="setting" *ngFor="let item of menus">
         <ul>
-          <li nz-menu-item>
-            <a routerLink="./welcome">统计分析</a>
-          </li>
-          <li nz-menu-item>
-            <a routerLink="./user">用户管理</a>
-          </li>
-          <li nz-menu-item>
-            <a>Workplace</a>
-          </li>
-        </ul>
-      </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
+          <li nz-menu-item *ngFor="let itemChildren of item.children">
+            <a [routerLink]="itemChildren.link">{{itemChildren.title }}</a>
           </li>
         </ul>
       </li>
@@ -44,7 +31,7 @@
         </span>
       </div>
       <div class="bgColor" nz-col nzSpan="2">
-        <nz-avatar  nzSize="large"  [nzText]="(user!==null) ? user.account:'匿' " class="avatar"></nz-avatar>
+        <nz-avatar  nzSize="large"  [nzText]="(user!==null && user.account !== null) ? user.account:'匿' " class="avatar"></nz-avatar>
       </div>
     </nz-header>
     <nz-content>

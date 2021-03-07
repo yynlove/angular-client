@@ -49,7 +49,8 @@ npm install -g cnpm --registry=https://registry.npm.taobao.org
 1. npm install @ngrx/store --save
 2. npm install @ngrx/store-devtools --save  浏览器安装Redux DevTools 插件
 
-
+### 安装ngx-cookie-service
+npm install ngx-cookie-service
 
 
 

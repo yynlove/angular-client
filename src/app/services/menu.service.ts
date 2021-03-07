@@ -18,8 +18,8 @@ export class MenuService {
   /**
    * 获取菜单
    */
-  getMenus(account:string):Observable<{user:User,menus:Menu[]}>{
-    const params = new HttpParams().append('account',account);
+  getMenus(userId:string):Observable<{user:User,menus:Menu[]}>{
+    const params = new HttpParams().append('uid',userId);
     return this.httpClient.get(this.url+'menu/getUserMenus',{params}).pipe(map((res:{user:User,menus:Menu[]})=>res));
   }
 

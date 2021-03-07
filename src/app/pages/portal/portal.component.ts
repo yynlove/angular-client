@@ -8,7 +8,7 @@ import { SetUser } from 'src/app/store/app-action';
 import { AppStoreModule } from 'src/app/store/app-store.module';
 import { ModelType, User } from '../../services/data-typs/data';
 import { UserService } from '../../services/user.service';
-
+import { CookieService } from "ngx-cookie-service";
 
 @Component({
   selector: 'app-portal',
@@ -25,7 +25,8 @@ export class PortalComponent implements OnInit {
     private nzMessageService:NzMessageService,
     @Inject(DA_SERVICE_TOKEN) private iTokenService: ITokenService,
     private store$: Store<AppStoreModule>,
-    private menuService:MenuService) {
+    private cookieService:CookieService,
+  ) {
       iTokenService.refresh.subscribe(iTM=>{
         console.log("过期");
       })
@@ -40,6 +41,7 @@ export class PortalComponent implements OnInit {
       //设置token
       const token = res.headers.get('authorization');
       this.iTokenService.set({token});
+      this.cookieService.set('UID',res.body.toString());
       //状态管理设置user
       this.store$.dispatch(SetUser({user}));
       //跳转首页

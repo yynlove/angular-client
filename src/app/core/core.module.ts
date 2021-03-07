@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
+import { InjectionToken, NgModule, PLATFORM_ID } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { zh_CN } from 'ng-zorro-antd/i18n';
-import { CommonModule, registerLocaleData } from '@angular/common';
+import { CommonModule, isPlatformBrowser, registerLocaleData } from '@angular/common';
 import zh from '@angular/common/locales/zh';
 import { MenuFoldOutline,MenuUnfoldOutline,FormOutline,DashboardOutline} from '@ant-design/icons-angular/icons';
 import { BrowserModule } from '@angular/platform-browser';
@@ -41,7 +41,8 @@ registerLocaleData(zh);
   providers: [
     { provide: NZ_I18N, useValue: zh_CN },
     { provide: NZ_ICONS, useValue: icons },
-    { provide:HTTP_INTERCEPTORS,useClass:JWTInterceptor,multi:true}
+    { provide:HTTP_INTERCEPTORS,useClass:JWTInterceptor,multi:true},
+
   ],
 })
 export class CoreModule { }
