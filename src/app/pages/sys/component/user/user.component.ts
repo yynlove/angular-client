@@ -36,7 +36,10 @@ export class UserComponent implements OnInit {
   searchForm:FormGroup;
 
 
-  constructor(private nzMessageService:NzMessageService,private fb: FormBuilder,private userService:UserService) {
+  constructor(
+    private nzMessageService:NzMessageService,
+    private fb: FormBuilder,
+    private userService:UserService) {
 
   }
 
@@ -54,9 +57,9 @@ ngOnInit(): void {
   });
 
   this.searchForm = this.fb.group({
-    userName:[''],
-    account:[''],
-    age:['']
+    s_userName:[''],
+    s_account:[''],
+    s_age:['']
   })
 }
 
@@ -125,8 +128,14 @@ loadTableData(pageIndex: number, pageSize: number,account='',userName='',age='')
   }
 
 
-  submitSearchForm(user:User) : void{
-    this.loadTableData(this.pageIndex,this.pageSize,user.account,user.userName,user.age.toString());
+  submitSearchForm() : void{
+    this.loadTableData(
+      this.pageIndex,
+      this.pageSize,
+      this.searchForm.controls.s_account.value,
+      this.searchForm.controls.s_userName.value,
+      this.searchForm.controls.s_age.value
+     );
   }
 
 

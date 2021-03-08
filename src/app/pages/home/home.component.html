@@ -12,7 +12,8 @@
         <h1>XX管理系统</h1>
       </a>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+
+    <ul nz-menu nzMode="inline" nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen [nzTitle]="item.title" nzIcon="setting" *ngFor="let item of menus">
         <ul>
           <li nz-menu-item *ngFor="let itemChildren of item.children">
@@ -21,7 +22,9 @@
         </ul>
       </li>
     </ul>
+
   </nz-sider>
+
   <nz-layout>
     <nz-header  nz-row>
       <div class="app-header bgColor" nz-col nzSpan="22">

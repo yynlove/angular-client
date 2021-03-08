@@ -2,7 +2,12 @@ button{
   margin-left: 8px;
 }
 
-.top{
+ .top{
   margin-top: 5px;
   margin-left: 5px;
+}
+.inner-content {
+  padding: 0px;
+  background: #fff;
+  max-height: 80%;
 }
