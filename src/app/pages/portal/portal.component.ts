@@ -8,7 +8,7 @@ import { SetUser } from 'src/app/store/app-action';
 import { AppStoreModule } from 'src/app/store/app-store.module';
 import { ModelType, User } from '../../services/data-typs/data';
 import { UserService } from '../../services/user.service';
-import { CookieService } from "ngx-cookie-service";
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
   selector: 'app-portal',

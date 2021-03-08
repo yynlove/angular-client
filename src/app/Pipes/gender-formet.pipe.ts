@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from "@angular/core";
 
+
 @Pipe({
   name: 'genderFormat'
 })
@@ -10,7 +11,10 @@ export class genderFormatPipe implements PipeTransform{
         return '男';
       }else if(value == 2){
         return '女';
+      }else{
+        return '';
       }
+
   }
 
 }

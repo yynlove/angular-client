@@ -26,7 +26,7 @@ export type Menu ={
   link?:string;
   pid?:number;
   orderNo?:number;
-  createTime?:Date;
+  lastTime?:Date;
   isValid?:number;
 
   children?:Menu[];

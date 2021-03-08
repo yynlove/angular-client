@@ -15,7 +15,6 @@ import { CommonModule } from '@angular/common';
     CommonModule,
     PortalRoutingModule,
     ShareModule,
-
   ],
   exports: [
     PortalComponent,
@@ -23,5 +22,4 @@ import { CommonModule } from '@angular/common';
     RegisterComponent
   ]
 })
-export class PortalModule {
-}
+export class PortalModule {}
