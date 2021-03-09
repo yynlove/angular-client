@@ -80,3 +80,7 @@ nz-content {
   color:#f56a00;
   background-color:#fde3cf;
 }
+
+nz-tabset {
+  height: 100%;
+}

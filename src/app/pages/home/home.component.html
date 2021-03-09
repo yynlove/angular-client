@@ -16,8 +16,9 @@
     <ul nz-menu nzMode="inline" nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-submenu nzOpen [nzTitle]="item.title" nzIcon="setting" *ngFor="let item of menus">
         <ul>
-          <li nz-menu-item *ngFor="let itemChildren of item.children">
-            <a [routerLink]="itemChildren.link">{{itemChildren.title }}</a>
+          <li nz-menu-item *ngFor="let itemChildren of item.children" (click)="openTab(itemChildren)">
+            <!-- <a [routerLink]="itemChildren.link">{{itemChildren.title }}</a> -->
+            <a nz-button  nzType="link" >{{itemChildren.title}}</a>
           </li>
         </ul>
       </li>
@@ -37,8 +38,23 @@
         <nz-avatar  nzSize="large"  [nzText]="(user!==null && user.account !== null) ? user.account:'匿' " class="avatar"></nz-avatar>
       </div>
     </nz-header>
-    <nz-content>
+    <!-- <nz-content>
       <router-outlet></router-outlet>
-    </nz-content>
+    </nz-content> -->
+    <!--  -->
+    <nz-tabset
+     [nzLinkRouter]="true" 
+     nzType="editable-card" 
+     nzLinkExact="false" 
+     nzHideAdd= "true" 
+     [(nzSelectedIndex)]="tabSelectedIndex"
+     nzClose)="closeTab($event)">
+
+      <nz-tab *ngFor="let tab of homeTabs;let i = index"  nzClosable [nzTitle]="tab.title">
+        <a *nzTabLink nz-tab-link [routerLink]="tab.link" ></a>
+        {{tab.link}}
+      </nz-tab>
+    </nz-tabset>
+  
   </nz-layout>
 </nz-layout>

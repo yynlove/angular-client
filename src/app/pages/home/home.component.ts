@@ -7,6 +7,9 @@ import { CookieService } from "ngx-cookie-service";
 import { MenuService } from 'src/app/services/menu.service';
 import { SetUser } from 'src/app/store/app-action';
 import { Router } from '_@angular_router@11.2.4@@angular/router';
+import { from, Observable, of } from '_rxjs@6.6.6@rxjs';
+import { FormArray } from '_@angular_forms@11.2.4@@angular/forms';
+import { find, findIndex, first } from '_rxjs@6.6.6@rxjs/internal/operators';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -18,6 +21,12 @@ export class HomeComponent implements OnInit {
 
   user:User = null;
   menus:Menu[] =[];
+
+  homeTabs:Menu[] = [];
+
+
+  tabSelectedIndex = -1;
+
   constructor(
     private store$:Store<AppStoreModule>,
     private cookieService:CookieService,
@@ -27,13 +36,12 @@ export class HomeComponent implements OnInit {
 
      //获取最新值
      const isExist = this.cookieService.check('UID');
-     console.log(isExist)
-
+    
        if(isExist){
          const uid = this.cookieService.get('UID');
-         console.log(uid);
+        
          this.menuService.getMenus(uid).subscribe(res =>{
-           console.log('res',res);
+        
            this.menus = res.menus;
            this.user = res.user;
            this.cookieService.set('UID',res.user.id.toString());
@@ -48,6 +56,26 @@ export class HomeComponent implements OnInit {
    }
 
   ngOnInit(): void {
+
+  }
+
+  closeTab({ index }: { index: number }): void {
+    this.homeTabs.splice(index, 1);
+  }
+
+
+  openTab(menu:Menu){
+    from(this.homeTabs).pipe(findIndex((tab)=> tab === menu)).subscribe(index =>{
+     
+      if(index<0){
+        this.homeTabs.push(menu);
+        this.tabSelectedIndex = this.homeTabs.length-1;
+      }else{
+        this.tabSelectedIndex = index;
+      }
+    })
+
+    console.log(this.homeTabs);
 
   }
 

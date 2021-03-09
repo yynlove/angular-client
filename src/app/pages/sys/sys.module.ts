@@ -12,7 +12,6 @@ import { genderFormatPipe } from 'src/app/Pipes/gender-formet.pipe';
   imports: [
     CommonModule,
     ShareModule,
-  
   ],
   exports:[
     WelcomeComponent,
