@@ -71,16 +71,11 @@ nz-header {
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 }
 
-nz-content {
-  margin: 5px;
+nz-tabset {
+  background: #c4b9b2;
 }
-
 
 .avatar{
   color:#f56a00;
   background-color:#fde3cf;
-}
-
-nz-tabset {
-  height: 100%;
 }

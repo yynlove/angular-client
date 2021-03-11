@@ -104,12 +104,12 @@
 
 
 <nz-drawer
-[nzMaskClosable]="true"
-[nzWidth]="720"
-[nzVisible]="visible"
-nzTitle="新增"
-[nzFooter]="footerTpl"
-(nzOnClose)="close()"
+  [nzMaskClosable]="true"
+  [nzWidth]="720"
+  [nzVisible]="visible"
+  nzTitle="新增"
+  [nzFooter]="footerTpl"
+  (nzOnClose)="close()"
 >
 
 <form *nzDrawerContent  nz-form [formGroup]="modalFrom" (ngSubmit)="submitForm(modalFrom.value)">
