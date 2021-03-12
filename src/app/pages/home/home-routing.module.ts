@@ -12,10 +12,10 @@ const routes: Routes = [
     component: HomeComponent,
     canActivate: [JWTGuard],
     children:[
-      { path: 'welcome', component:WelcomeComponent },
-      { path: 'user',component:UserComponent },
-      { path: 'role',component:RoleComponent },
-      { path: 'menus', component:MenusComponent},
+      { path: 'welcome', component:WelcomeComponent,data:{tilte:'欢迎',useCache:true} },
+      { path: 'user',component:UserComponent,data:{tilte:'用户管理',useCache:false} },
+      { path: 'role',component:RoleComponent,data:{tilte:'角色管理',useCache:true} },
+      { path: 'menus', component:MenusComponent,data:{tilte:'菜单管理',useCache:true}},
   ]},
 ];
 

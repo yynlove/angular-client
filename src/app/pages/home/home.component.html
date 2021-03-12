@@ -44,14 +44,13 @@
     <nz-tabset
         [(nzSelectedIndex)]="tabSelectedIndex"
         nzType="editable-card"
-        nzLinkRouter
         nzHideAdd
         (nzClose)="closeTab($event)"
       >
-        <nz-tab *ngFor="let tab of homeTabs;let i = index" nzClosable  [nzTitle]="tab.title" (nzSelect)="select(tab,i)">
+        <nz-tab  *ngFor="let tab of homeTabs;let i = index" nzClosable  [nzTitle]="tab.title" (nzSelect)="tabSelect(tab)">
         </nz-tab>
     </nz-tabset>
-    <router-outlet></router-outlet>
+    <router-outlet  class="main-content"></router-outlet>
     
   </nz-layout>
 </nz-layout>
