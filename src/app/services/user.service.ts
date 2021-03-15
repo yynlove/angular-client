@@ -1,6 +1,5 @@
 import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
-import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/internal/operators';
 import { Result, User } from './data-typs/data';
@@ -11,7 +10,7 @@ import { API_CONFIG, ServicesModule } from './services.module';
   providedIn: ServicesModule
 })
 export class UserService {
-
+  
 
 
   constructor(
@@ -80,6 +79,17 @@ export class UserService {
      return this.httpClient.post(this.url + 'users/login', user, { observe: 'response' })
      .pipe(catchError(this.handleError),map((res:HttpResponse<Object>)=> res));
   }
+
+
+  /**
+   * 登出
+   * @param error 
+   * @returns 
+   */
+   logout() :Observable<HttpResponse<Object>>{
+    return this.httpClient.post(this.url +"logout",{ observe: 'response' }).pipe(catchError(this.handleError),map((res:HttpResponse<Object>) => res));
+  }
+
 
 
 

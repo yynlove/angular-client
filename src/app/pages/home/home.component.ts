@@ -8,6 +8,7 @@ import { SetUser } from 'src/app/store/app-action';
 import { ActivatedRoute, ActivationEnd, Router } from '_@angular_router@11.2.4@@angular/router';
 import { from } from 'rxjs';
 import { filter, findIndex } from 'rxjs/internal/operators';
+import { UserService } from 'src/app/services/user.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -34,6 +35,7 @@ export class HomeComponent implements OnInit {
     private cookieService:CookieService,
     private menuService:MenuService,
     private router:Router,
+    private userService:UserService,
     private activatedRoute: ActivatedRoute,
   ) {
 
@@ -160,6 +162,13 @@ export class HomeComponent implements OnInit {
 	}
 
 
+  logout(){
+    this.userService.logout().subscribe(res =>{
+      this.store$.dispatch(SetUser({user:null}));
+      this.router.navigate(['/login/']);
+    });
+    
+  }
 
 
 

@@ -7,7 +7,7 @@ export type User ={
   userName?:string;
   age?:number;
   address?:string;
-  passWord?:string;
+  password?:string;
   md5?:string;
   createTime?:Date;
   gender?:number;

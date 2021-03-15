@@ -83,3 +83,7 @@ nz-tabset{
 .main-content{
   margin:100 0 0 100px;
 }
+
+nz-list-item{
+  height: 40px;
+}

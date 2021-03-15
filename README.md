@@ -35,6 +35,11 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 安装 npm i @delon/auth
 
 
+## 路由复用
+1. 创建类SimpleReuseStrategy 实现 RouteReuseStrategy 接口，实现路由复用
+2. 路由上添加data:{title:'标题',useCache:boolean} useCache=true 代表路由复用，title 作为路由的key  
+
+
 ## 删除node_modules
 npm提供一个包 remove-node-modules 来帮助删除 node_modules
 npm i -g remove-node-modules
@@ -49,8 +54,19 @@ npm install -g cnpm --registry=https://registry.npm.taobao.org
 1. npm install @ngrx/store --save
 2. npm install @ngrx/store-devtools --save  浏览器安装Redux DevTools 插件
 
+
+### Md5 加密
+1.  npm install ts-md5 --save
+
 ### 安装ngx-cookie-service
 npm install ngx-cookie-service
+
+### @delon/auth cookies 有些问题，CookieStorageStore使用
+1. cnpm install ngx-utils-cookies-port --save
+安装 ngx-utils-cookies-port
+虽然 NG-ALAIN 提供 CookieStorageStore 但它并不支持服务端 SSR 访问 Cookie，因此需要手动构建针对 SSR 的 Token 持久化存储。
+推荐使用 @ngx-utils/cookies 来处理 Cookies，它同时支持客户端与服务端。
+
 
 
 

@@ -36,8 +36,29 @@
         </span>
       </div>
       <div class="bgColor" nz-col nzSpan="2">
-        <nz-avatar  nzSize="large"  [nzText]="(user!==null && user.account !== null) ? user.account:'匿' " class="avatar"></nz-avatar>
+        <nz-avatar 
+          nzSize="large"
+          [nzText]="(user!==null && user.account !== null) ? user.account:'匿' " 
+          class="avatar"
+          nz-popover
+          nzPopoverTitle="个人信息"
+          nzPopoverPlacement="bottomLeft"
+          [nzPopoverContent]="userInfoPopover"
+          nzPopoverTrigger="hover"
+        >
+      </nz-avatar>
       </div>
+      <ng-template #userInfoPopover>
+        <nz-list [nzSize]="default" [nzItemLayout]="vertical">
+          <nz-list-item >
+            <a nz-button nzType="text"><i nz-icon nzType="user" nzTheme="outline"></i>修改密码</a>
+          </nz-list-item>
+          <nz-list-item (click)="logout()">
+            <a nz-button nzType="text"><i nz-icon nzType="logout" nzTheme="outline"></i>登出</a>
+          </nz-list-item>
+        </nz-list>
+      </ng-template>
+
     </nz-header> 
 
 
@@ -51,6 +72,6 @@
         </nz-tab>
     </nz-tabset>
     <router-outlet  class="main-content"></router-outlet>
-    
+
   </nz-layout>
 </nz-layout>

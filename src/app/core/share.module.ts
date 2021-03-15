@@ -19,6 +19,9 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { NzAvatarModule } from 'ng-zorro-antd/avatar';
 import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzPopoverModule } from 'ng-zorro-antd/popover';
+import { NzListModule } from 'ng-zorro-antd/list';
+
 @NgModule({
   declarations: [],
   imports: [
@@ -42,7 +45,9 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
     NzInputNumberModule,
     NzAvatarModule,
     NzTabsModule,
-    NzTagModule
+    NzTagModule,
+    NzPopoverModule,
+    NzListModule
   ],
   exports:[
     FormsModule,
@@ -65,7 +70,9 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
     NzInputNumberModule,
     NzAvatarModule,
     NzTabsModule,
-    NzTagModule
+    NzTagModule,
+    NzPopoverModule,
+    NzListModule
   ]
 })
 export class ShareModule { }
