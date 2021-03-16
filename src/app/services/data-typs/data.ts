@@ -14,6 +14,7 @@ export type User ={
   account?:string;
   remember?:number;
   token?:string;
+  timeout?:number;
 }
 
 

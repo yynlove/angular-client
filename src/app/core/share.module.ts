@@ -21,7 +21,7 @@ import { NzTabsModule } from 'ng-zorro-antd/tabs';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzPopoverModule } from 'ng-zorro-antd/popover';
 import { NzListModule } from 'ng-zorro-antd/list';
-
+import { NzModalModule } from 'ng-zorro-antd/modal';
 @NgModule({
   declarations: [],
   imports: [
@@ -47,7 +47,8 @@ import { NzListModule } from 'ng-zorro-antd/list';
     NzTabsModule,
     NzTagModule,
     NzPopoverModule,
-    NzListModule
+    NzListModule,
+    NzModalModule
   ],
   exports:[
     FormsModule,
@@ -72,7 +73,8 @@ import { NzListModule } from 'ng-zorro-antd/list';
     NzTabsModule,
     NzTagModule,
     NzPopoverModule,
-    NzListModule
+    NzListModule,
+    NzModalModule
   ]
 })
 export class ShareModule { }

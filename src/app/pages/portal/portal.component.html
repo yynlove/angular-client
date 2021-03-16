@@ -7,7 +7,7 @@
 <h3>ADMIN</h3>
 
     <div [ngSwitch]="currentModalType">
-        <app-register *ngSwitchCase="'Register'" (onModelTypeChange)= "modelChange($event)"></app-register>
+        <app-register *ngSwitchCase="'Register'" (onModelTypeChange)="modelChange($event)"></app-register>
         <app-login *ngSwitchDefault (onLogin)="login($event)" (onModelTypeChange)="modelChange($event)"></app-login>
     </div>
 

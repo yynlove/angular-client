@@ -103,106 +103,109 @@
 </nz-table>
 
 
-<nz-drawer
-  [nzMaskClosable]="true"
-  [nzWidth]="720"
-  [nzVisible]="visible"
-  nzTitle="新增"
-  [nzFooter]="footerTpl"
-  (nzOnClose)="close()"
->
+    <nz-modal
+      [(nzVisible)]="isVisible"
+      [nzTitle]="modalTitle"
+      [nzContent]="modalContent"
+      [nzFooter]="modalFooter"
+      (nzOnCancel)="handleCancel()"
+    >
+      <ng-template #modalTitle>新增</ng-template>
 
-<form *nzDrawerContent  nz-form [formGroup]="modalFrom" (ngSubmit)="submitForm(modalFrom.value)">
-  <div nz-row [nzGutter]="8">
-    <div nz-col nzSpan="12">
-      <nz-form-item>
-        <nz-form-label nzRequired>姓名</nz-form-label>
-        <nz-form-control>
-          <input nz-input formControlName="userName" placeholder="请输入姓名" />
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-    <div nz-col nzSpan="12">
-      <nz-form-item>
-        <nz-form-label nzRequired="true" >账户名</nz-form-label>
-        <nz-form-control nzHasFeedback nzValidatingTip="Validating..."  [nzErrorTip]="userErrorTpl">
-          <input nz-input formControlName="account" placeholder="请输入账户名" />
-          <ng-template #userErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              请输入账户!
-            </ng-container>
-            <ng-container *ngIf="control.hasError('duplicated')">
-              账户已存在！
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
+      <ng-template #modalContent>
+        <form  nz-form [formGroup]="addFrom">
+          <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label nzRequired>姓名</nz-form-label>
+                <nz-form-control>
+                  <input nz-input formControlName="userName" placeholder="请输入姓名" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label nzRequired>账户</nz-form-label>
+                <nz-form-control nzHasFeedback nzValidatingTip="Validating..."  [nzErrorTip]="userErrorTpl">
+                  <input nz-input formControlName="account" placeholder="请输入账户名" />
+                  <ng-template #userErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      请输入账户!
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('duplicated')">
+                      账户已存在！
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+        
+            </div>
+          </div>
+          <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label nzRequired>密码</nz-form-label>
+                <nz-form-control nzHasFeedback>
+                  <input type="password" formControlName="password" (ngModelChange)="validateConfirmPassword()" nz-input placeholder="请输入密码"/>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label nzRequired>重复输入密码</nz-form-label>
+                <nz-form-control nzRequired nzHasFeedback [nzErrorTip]="passwordErrorTpl">
+                  <input nz-input type="password"  formControlName="confirm" placeholder="确认你的密码"/>
+                  <ng-template #passwordErrorTpl let-control>
+                    <ng-container *ngIf="control.hasError('required')">
+                      请确认你的密码！
+                    </ng-container>
+                    <ng-container *ngIf="control.hasError('confirm')">
+                      密码不一致！
+                    </ng-container>
+                  </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>性别</nz-form-label>
+                <nz-form-control>
+                  <nz-radio-group formControlName="gender">
+                    <label nz-radio nzValue="1">男</label>
+                    <label nz-radio nzValue="2">女</label>
+                  </nz-radio-group>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col nzSpan="12">
+              <nz-form-item>
+                <nz-form-label>年龄</nz-form-label>
+                <nz-form-control>
+                  <input nz-input-number formControlName="age" placeholder="请输入年龄" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div nz-row [nzGutter]="8">
+            <div nz-col nzSpan="24">
+              <nz-form-item>
+                <nz-form-label>地址</nz-form-label>
+                <nz-form-control>
+                  <textarea nz-input formControlName="address" placeholder="请输入地址" [nzAutosize]="{ minRows: 4, maxRows: 4 }"></textarea>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+         
+        </form>
+      </ng-template>
 
-    </div>
-  </div>
-  <div nz-row [nzGutter]="8">
-    <div nz-col nzSpan="12">
-      <nz-form-item>
-        <nz-form-label nzRequired>密码</nz-form-label>
-        <nz-form-control nzHasFeedback>
-          <input type="password" formControlName="password" (ngModelChange)="validateConfirmPassword()" nz-input placeholder="请输入密码"/>
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-    <div nz-col nzSpan="12">
-      <nz-form-item>
-        <nz-form-label nzRequired>重复输入密码</nz-form-label>
-        <nz-form-control nzRequired nzHasFeedback [nzErrorTip]="passwordErrorTpl">
-          <input nz-input type="password"  formControlName="confirm" placeholder="确认你的密码"/>
-          <ng-template #passwordErrorTpl let-control>
-            <ng-container *ngIf="control.hasError('required')">
-              请确认你的密码！
-            </ng-container>
-            <ng-container *ngIf="control.hasError('confirm')">
-              密码不一致！
-            </ng-container>
-          </ng-template>
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-  </div>
-  <div nz-row [nzGutter]="8">
-    <div nz-col nzSpan="12">
-      <nz-form-item>
-        <nz-form-label>性别</nz-form-label>
-        <nz-form-control>
-          <nz-radio-group formControlName="gender">
-            <label nz-radio nzValue="1">男</label>
-            <label nz-radio nzValue="2">女</label>
-          </nz-radio-group>
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-    <div nz-col nzSpan="12">
-      <nz-form-item>
-        <nz-form-label>年龄</nz-form-label>
-        <nz-form-control>
-          <input nz-input-number formControlName="age" placeholder="请输入年龄" />
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-  </div>
-  <div nz-row [nzGutter]="8">
-    <div nz-col nzSpan="24">
-      <nz-form-item>
-        <nz-form-label>地址</nz-form-label>
-        <nz-form-control>
-          <textarea nz-input formControlName="address" placeholder="请输入地址" [nzAutosize]="{ minRows: 4, maxRows: 4 }"></textarea>
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-  </div>
-  <button nz-button  nzType="primary" [disabled]="!modalFrom.valid">提交</button>
-</form>
-<ng-template #footerTpl>
-  <div style="float: right">
-    <button nz-button style="margin-right: 8px;" (click)="close($event)">关闭</button>
-  </div>
-</ng-template>
-</nz-drawer>
+      <ng-template #modalFooter>
+        <button nz-button  nzType="primary" [disabled]="!addFrom.valid" (click)="submitForm(addFrom.value)">提交</button>
+        <button nz-button style="margin-right: 8px;" (click)="close($event)">关闭</button>
+      </ng-template>
+    </nz-modal>
+
 

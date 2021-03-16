@@ -8,6 +8,7 @@ import { AppStoreModule } from 'src/app/store/app-store.module';
 import { ModelType, User } from '../../services/data-typs/data';
 import { UserService } from '../../services/user.service';
 import { Md5 } from "ts-md5/dist/md5";
+import { CookieService } from "ngx-cookie-service";
 @Component({
   selector: 'app-portal',
   templateUrl: './portal.component.html',
@@ -22,11 +23,10 @@ export class PortalComponent implements OnInit {
     private router:Router,
     private nzMessageService:NzMessageService,
     @Inject(DA_SERVICE_TOKEN) private iTokenService: ITokenService,
+    private cookieService : CookieService,
     private store$: Store<AppStoreModule>,
   ) {
-      iTokenService.refresh.subscribe(iTM=>{
-        console.log("过期");
-      })
+      
     }
 
   ngOnInit(): void {
@@ -34,19 +34,22 @@ export class PortalComponent implements OnInit {
   }
 
   login(user:User): void {
-    //Md5求密码 536f868c09cfbc81399401da424e42e6
-    user.password =  Md5.hashStr(user.password).toString();
-
+  
+    let md5ste = Md5.hashStr(user.password).toString();
+    user.password = md5ste;
     this.userService.login(user).subscribe(res =>{
       //设置token
       const token = res.headers.get('authorization');
-      this.iTokenService.set({token});
+      this.iTokenService.set({token:token});
+      let bodyUser = res.body as User;
+      console.log('bodyUser',bodyUser);
+      this.cookieService.set('uid',bodyUser.id.toString())
       //状态管理设置user
-      this.store$.dispatch(SetUser({user}));
+      this.store$.dispatch(SetUser({ user:bodyUser}));
       //跳转首页
       this.router.navigate(['/home/']);
     },(error)=>{
-      this.nzMessageService.error('密码错误');
+      this.nzMessageService.error('密码错误,获取失败');
     })
   }
 

@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { NzTableQueryParams } from 'ng-zorro-antd/table';
-import { Observable, Observer, of, timer } from 'rxjs';
+import { Observable, Observer, timer } from 'rxjs';
 import { User } from 'src/app/services/data-typs/data';
 import { UserService } from 'src/app/services/user.service';
-
+import { Md5 } from "ts-md5/dist/md5";
 
 
 @Component({
@@ -14,6 +14,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit {
+  isVisible:boolean = false;
   //是否选中
   checked = false;
   //账户校验状态
@@ -22,10 +23,10 @@ export class UserComponent implements OnInit {
   //数据表格数据
   listOfData: User[];
   setOfCheckedId = new Set<number>();
-  visible = false;
+
   editCache: { [key: number]: { edit: boolean; data: User } } = {};
   //新增数据表单
-  modalFrom : FormGroup;
+  addFrom : FormGroup;
   pageIndex :number = 1;
   pageSize :number = 10;
   //数据是否加载中
@@ -45,15 +46,15 @@ export class UserComponent implements OnInit {
 
 
 ngOnInit(): void {
-  this.modalFrom = this.fb.group({
-    userName:['',[Validators.required]],
-    age:['',[Validators.required]],
-    password:['',[Validators.required]],
-    confirm:['',[this.confirmValidator]],
-    gender:['',[Validators.required]],
+  this.addFrom = this.fb.group({
+    userName:[null,[Validators.required]],
+    age:[null,[Validators.required]],
+    password:[null,[Validators.required]],
+    confirm:[null,[this.confirmValidator]],
+    gender:[null,[Validators.required]],
     //validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]} 变更默认值改变校验， 设置失去焦点 才进行访问api
-    account:['',{updateOn:'blur', validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]}],
-    address:['',[Validators.required]]
+    account:[null,{updateOn:'blur', validators:[Validators.required], asyncValidators:[this.accountAsyncValidator]}],
+    address:[null,[Validators.required]]
   });
 
   this.searchForm = this.fb.group({
@@ -92,7 +93,8 @@ loadTableData(pageIndex: number, pageSize: number,account='',userName='',age='')
    * 打开新增面板
    */
   open(): void {
-    this.visible = true;
+    this.isVisible = true;
+    this.addFrom.reset();
   }
 
 
@@ -104,12 +106,12 @@ loadTableData(pageIndex: number, pageSize: number,account='',userName='',age='')
     if(e!==null){
       e.preventDefault()
     };
-    this.modalFrom.reset();
-    for (const key in this.modalFrom.controls) {
-      this.modalFrom.controls[key].markAsPristine();
-      this.modalFrom.controls[key].updateValueAndValidity();
+    this.addFrom.reset();
+    for (const key in this.addFrom.controls) {
+      this.addFrom.controls[key].markAsPristine();
+      this.addFrom.controls[key].updateValueAndValidity();
     }
-    this.visible = false;
+    this.isVisible = false;
 
   }
 
@@ -117,12 +119,13 @@ loadTableData(pageIndex: number, pageSize: number,account='',userName='',age='')
    *
    * 新增提交表单
    */
-   submitForm(user: User): void {
+   submitForm(user:User): void {
+    user.password = Md5.hashStr(user.password).toString();
     this.userService.insertOne(user).subscribe(res=>{
       if(res){
         this.loadTableData(this.pageIndex,this.pageSize);
-        this.modalFrom.reset();
-        this.visible = false;
+        this.addFrom.reset();
+        this.isVisible = false;
       }
     });
   }
@@ -231,7 +234,7 @@ loadTableData(pageIndex: number, pageSize: number,account='',userName='',age='')
   confirmValidator = (control :FormControl): {[s:string]:boolean} =>{
     if (!control.value) {
       return { error: true, required: true };
-    } else if (control.value !== this.modalFrom.controls.password.value) {
+    } else if (control.value !== this.addFrom.controls.password.value) {
       return { confirm: true, error: true };
     }
     return {};
@@ -241,11 +244,16 @@ loadTableData(pageIndex: number, pageSize: number,account='',userName='',age='')
    * 该配置项会决定控件如何传播变更并发出事件
    */
   validateConfirmPassword(): void {
-    timer(2000).subscribe(() => this.modalFrom.controls.confirm.updateValueAndValidity());
+    timer(2000).subscribe(() => this.addFrom.controls.confirm.updateValueAndValidity());
 
   }
 
 
+
+
+  handleCancel(){
+    this.isVisible = false;
+  }
 
 
 

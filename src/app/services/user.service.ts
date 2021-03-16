@@ -10,6 +10,7 @@ import { API_CONFIG, ServicesModule } from './services.module';
   providedIn: ServicesModule
 })
 export class UserService {
+ 
   
 
 
@@ -24,14 +25,14 @@ export class UserService {
   /**
    * 获取所有用户信息
    */
-  getUsersInfo(pageIndex:number,pageSize:number,account,userName,age):Observable<Result>{
+  getUsersInfo(pageIndex:number,pageSize:number,account:string,userName:string,age:string):Observable<Result>{
 
     let params = new HttpParams()
     .append('pageIndex',pageIndex.toString())
     .append('pageSize',pageSize.toString())
     .append('account',account)
     .append('userName',userName)
-    .append('age',age.toString());
+    .append('age',age);
     return this.httpClient.get(this.url+'users/listUsers',{params}).pipe(map((res: Result)=>res));
 
   }
@@ -43,6 +44,8 @@ export class UserService {
   updateUser(data: User):Observable<Result> {
     return this.httpClient.put(this.url+'users/updateUser',data).pipe(map((res:Result) => res ));
   }
+
+
 
 
   /**

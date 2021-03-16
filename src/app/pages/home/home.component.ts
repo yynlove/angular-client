@@ -1,5 +1,5 @@
 import { Component, OnInit, SimpleChanges } from '@angular/core';
-import {  Store } from '@ngrx/store';
+import {  select, Store } from '@ngrx/store';
 import { Menu, User } from 'src/app/services/data-typs/data';
 import { AppStoreModule } from 'src/app/store/app-store.module';
 import { CookieService } from "ngx-cookie-service";
@@ -9,6 +9,9 @@ import { ActivatedRoute, ActivationEnd, Router } from '_@angular_router@11.2.4@@
 import { from } from 'rxjs';
 import { filter, findIndex } from 'rxjs/internal/operators';
 import { UserService } from 'src/app/services/user.service';
+import { getUser, getUserState } from 'src/app/store/app-selector';
+import { NzMessageService } from '_ng-zorro-antd@11.2.0@ng-zorro-antd/message';
+import { identifierModuleUrl } from '_@angular_compiler@11.2.4@@angular/compiler';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -37,6 +40,7 @@ export class HomeComponent implements OnInit {
     private router:Router,
     private userService:UserService,
     private activatedRoute: ActivatedRoute,
+    private messageService:NzMessageService
   ) {
 
 	  // 只订阅 ActivationEnd 事件
@@ -69,26 +73,26 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     //获取最新值
-    const isExist = this.cookieService.check('UID');
-    
+    let isExist = this.cookieService.check('uid');
     if(isExist){
-      const uid = this.cookieService.get('UID');
-      this.menuService.getMenus(uid).subscribe(res =>{
-    
-        this.menus = res.menus;
-        this.user = res.user;
-        this.cookieService.set('UID',res.user.id.toString());
-        this.store$.dispatch(SetUser({user:res.user}));
-        //封装map
-        this.initMenusMap(this.menus);
-      });
-    }else{
-      this.router.navigate(['/login']);
+      this.getUserMenus(this.cookieService.get('uid'));
     }
     
     //重回首页
     this.reHome();
   }
+
+  getUserMenus(uid:string){
+    this.menuService.getMenus(uid).subscribe(res =>{
+      this.menus = res.menus;
+      this.user = res.user;
+      this.store$.dispatch(SetUser({user:res.user}));
+      //封装map
+      this.initMenusMap(this.menus);
+    });
+  }
+
+
 
   initMenusMap(ms: Array<Menu>) {
 	  if (Array.isArray(ms)){
@@ -101,7 +105,7 @@ export class HomeComponent implements OnInit {
 
   //重回首页
   reHome(){
-    if(this.homeTabs.length ===0){
+    if(!(this.user) || this.homeTabs.length === 0){
       this.router.navigate(['/home']);
     }
   }
@@ -165,6 +169,7 @@ export class HomeComponent implements OnInit {
   logout(){
     this.userService.logout().subscribe(res =>{
       this.store$.dispatch(SetUser({user:null}));
+      this.user = null;
       this.router.navigate(['/login/']);
     });
     
