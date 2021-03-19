@@ -42,7 +42,9 @@ export class PortalComponent implements OnInit {
       const token = res.headers.get('authorization');
       this.iTokenService.set({token:token});
       let bodyUser = res.body as User;
-      console.log('bodyUser',bodyUser);
+      if(this.cookieService.check('uid')){
+        this.cookieService.delete('uid');
+      }
       this.cookieService.set('uid',bodyUser.id.toString())
       //状态管理设置user
       this.store$.dispatch(SetUser({ user:bodyUser}));

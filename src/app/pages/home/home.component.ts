@@ -1,4 +1,4 @@
-import { Component, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Inject, OnInit, SimpleChanges } from '@angular/core';
 import {  select, Store } from '@ngrx/store';
 import { Menu, User } from 'src/app/services/data-typs/data';
 import { AppStoreModule } from 'src/app/store/app-store.module';
@@ -9,9 +9,8 @@ import { ActivatedRoute, ActivationEnd, Router } from '_@angular_router@11.2.4@@
 import { from } from 'rxjs';
 import { filter, findIndex } from 'rxjs/internal/operators';
 import { UserService } from 'src/app/services/user.service';
-import { getUser, getUserState } from 'src/app/store/app-selector';
 import { NzMessageService } from '_ng-zorro-antd@11.2.0@ng-zorro-antd/message';
-import { identifierModuleUrl } from '_@angular_compiler@11.2.4@@angular/compiler';
+import { DA_SERVICE_TOKEN, ITokenService } from '_@delon_auth@11.7.1@@delon/auth';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -40,7 +39,8 @@ export class HomeComponent implements OnInit {
     private router:Router,
     private userService:UserService,
     private activatedRoute: ActivatedRoute,
-    private messageService:NzMessageService
+    private messageService:NzMessageService,
+    @Inject(DA_SERVICE_TOKEN) private iTokenService: ITokenService,
   ) {
 
 	  // 只订阅 ActivationEnd 事件
@@ -63,7 +63,6 @@ export class HomeComponent implements OnInit {
           if(index>=0){
             this.tabSelectedIndex = index;
           }else{
-            console.log(title);
             this.openTab(this.menusMap[title]);
           }
         })
@@ -72,6 +71,10 @@ export class HomeComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.iTokenService['refresh'].subscribe(iTokenModel =>{
+      console.log("token改变",iTokenModel);
+    })
+
     //获取最新值
     let isExist = this.cookieService.check('uid');
     if(isExist){

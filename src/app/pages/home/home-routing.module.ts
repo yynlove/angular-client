@@ -1,6 +1,7 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { JWTGuard } from "@delon/auth";
+import { ChatRoomComponent } from "../sys/component/chat-room/chat-room.component";
 import { MenusComponent } from "../sys/component/menus/menus.component";
 import { RoleComponent } from "../sys/component/role/role.component";
 import { UserComponent } from "../sys/component/user/user.component";
@@ -16,6 +17,7 @@ const routes: Routes = [
       { path: 'user',component:UserComponent,data:{tilte:'用户管理',useCache:true} },
       { path: 'role',component:RoleComponent,data:{tilte:'角色管理',useCache:true} },
       { path: 'menus', component:MenusComponent,data:{tilte:'菜单管理',useCache:true}},
+      { path: 'chatRoom', component:ChatRoomComponent,data:{tilte:'聊天室',useCache:true}},
   ]},
 ];
 

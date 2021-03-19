@@ -8,7 +8,6 @@ export type User ={
   age?:number;
   address?:string;
   password?:string;
-  md5?:string;
   createTime?:Date;
   gender?:number;
   account?:string;

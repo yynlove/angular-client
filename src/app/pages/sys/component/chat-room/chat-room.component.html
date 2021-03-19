@@ -1,0 +1,23 @@
+<ul nz-list [nzDataSource]="data" nzBordered nzSize="large" class="list">
+    <nz-list-header>聊天室</nz-list-header>
+        <cdk-virtual-scroll-viewport #scrollComponent itemSize="73" class="demo-infinite-container">
+            <li nz-list-item *ngFor="let item of data" nzNoFlex>
+                <nz-list-item-meta
+               
+                >
+                <nz-list-item-meta-title>
+                    {{item.title}}
+                </nz-list-item-meta-title>
+                </nz-list-item-meta>
+            </li>
+        </cdk-virtual-scroll-viewport>
+   
+    <nz-list-footer>
+        <nz-input-group nzSearch nzSize="large" [nzAddOnAfter]="suffixButton">
+            <input type="text" nz-input placeholder="input  text" />
+          </nz-input-group>
+          <ng-template #suffixButton>
+            <button nz-button nzType="primary" nzSize="large" nzSearch>发送</button>
+          </ng-template>
+    </nz-list-footer>
+  </ul>
