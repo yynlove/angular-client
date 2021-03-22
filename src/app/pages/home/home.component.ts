@@ -92,6 +92,11 @@ export class HomeComponent implements OnInit {
       this.store$.dispatch(SetUser({user:res.user}));
       //封装map
       this.initMenusMap(this.menus);
+    },
+    (error)=>{
+      console.log('数据传输失败');
+      this.iTokenService.clear();
+
     });
   }
 
