@@ -5,12 +5,12 @@ import { AppStoreModule } from 'src/app/store/app-store.module';
 import { CookieService } from "ngx-cookie-service";
 import { MenuService } from 'src/app/services/menu.service';
 import { SetUser } from 'src/app/store/app-action';
-import { ActivatedRoute, ActivationEnd, Router } from '_@angular_router@11.2.4@@angular/router';
 import { from } from 'rxjs';
 import { filter, findIndex } from 'rxjs/internal/operators';
 import { UserService } from 'src/app/services/user.service';
-import { NzMessageService } from '_ng-zorro-antd@11.2.0@ng-zorro-antd/message';
-import { DA_SERVICE_TOKEN, ITokenService } from '_@delon_auth@11.7.1@@delon/auth';
+import { ActivatedRoute, ActivationEnd, Router } from '@angular/router';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -48,15 +48,15 @@ export class HomeComponent implements OnInit {
       filter(e => e instanceof ActivationEnd))
 	    .subscribe((e: ActivationEnd) => {
 	      const snapshot = e.snapshot;
-	      const isSkip = !(snapshot['_routerState'].url 
-	      					&& snapshot.routeConfig.data 
+	      const isSkip = !(snapshot['_routerState'].url
+	      					&& snapshot.routeConfig.data
 	      					&& snapshot.routeConfig.data.useCache);
 	      if (isSkip) return;
-	
+
 		  // 获取路由配置中自定义的唯一标记
 		  // uid: Unique Identity
 	      const title = snapshot.routeConfig.data.title;
-        
+
         from(this.homeTabs)
         .pipe(findIndex((tab:Menu) => tab.title == title))
         .subscribe(index =>{
@@ -66,7 +66,7 @@ export class HomeComponent implements OnInit {
             this.openTab(this.menusMap[title]);
           }
         })
-	
+
 	    });
    }
 
@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit {
     if(isExist){
       this.getUserMenus(this.cookieService.get('uid'));
     }
-    
+
     //重回首页
     this.reHome();
   }
@@ -122,7 +122,7 @@ export class HomeComponent implements OnInit {
   //打开tab
   openTab(menu:Menu) {
 	  if (!menu) return;
-	
+
 	  // 如果已经存在该tab页签, 直接将它选中
 	  // 如果没有打开就添加该tab页签, 并将它选中
 	  // pushUniqueA 为自定义方法, 后面有说明
@@ -134,7 +134,7 @@ export class HomeComponent implements OnInit {
         this.tabSelectedIndex = this.homeTabs.length -1;
       }
     })
-	  
+
 	  // 将当前页面标题切换为菜单名字
 	  let tab = this.homeTabs[this.tabSelectedIndex];
 	  // this.titleService.setTitle(tab.name);
@@ -161,7 +161,7 @@ export class HomeComponent implements OnInit {
 
     this.reHome();
 	}
-	
+
 	// 切换tab选项卡，激活选项卡对应的路由
 	tabSelect(tab) {
 	  this.activeRoute(tab);
@@ -180,7 +180,7 @@ export class HomeComponent implements OnInit {
       this.user = null;
       this.router.navigate(['/login/']);
     });
-    
+
   }
 
 
